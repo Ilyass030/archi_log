@@ -9,28 +9,32 @@ def create_list():
     )
     mycursor = mydb.cursor()
 
-    mycursor.execute('''create table if not exists liste_type(
+    mycursor.execute('''create table if not exists liste_genres(
                         id int auto_increment primary key, nom varchar(20))''')
 
-    mycursor.execute('''create table if not exists liste_plateforme(
-                        id int auto_increment primary key, nom varchar(20))''')
-
-    mycursor.execute('''create table if not exists liste_jeux(
-                        id int auto_increment primary key,nom varchar(50), plateforme_id int,
-                        prix int, type_id int, description varchar(500))''')
+    mycursor.execute('''create table if not exists liste_films(
+                        id int auto_increment primary key,nom varchar(50), resume varchar(500),
+                        annee_sortie unsigned int, nb_visionnage unsigned int,
+                        nb_notes unsigned int, note_moyenne unsined char''')
     
-    mycursor.execute('''insert ignore into liste_type (id, nom) values(%s, %s)''', (1, "FPS"))
-    mycursor.execute('''insert ignore into liste_type (id, nom) values(%s, %s)''', (2, "TPS"))
-    mycursor.execute('''insert ignore into liste_type (id, nom) values(%s, %s)''', (3, "Stratégie"))
-    mycursor.execute('''insert ignore into liste_type (id, nom) values(%s, %s)''', (4, "Simulation"))
-    mycursor.execute('''insert ignore into liste_type (id, nom) values(%s, %s)''', (5, "RPG"))
-    mycursor.execute('''insert ignore into liste_type (id, nom) values(%s, %s)''', (6, "Platformer"))
-
-    mycursor.execute('''insert ignore into liste_plateforme (id, nom) values(%s, %s)''', (1, "PC"))
-    mycursor.execute('''insert ignore into liste_plateforme (id, nom) values(%s, %s)''', (2, "XBox series X"))
-    mycursor.execute('''insert ignore into liste_plateforme (id, nom) values(%s, %s)''', (3, "Playstation 5"))
-    mycursor.execute('''insert ignore into liste_plateforme (id, nom) values(%s, %s)''', (4, "Nintendo Switch"))
-    mycursor.execute('''insert ignore into liste_plateforme (id, nom) values(%s, %s)''', (5, "Téléphone Portable"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (1, "Action"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (2, "Aventure"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (3, "Animation"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (4, "Comédie"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Crime"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Documentaire"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Drama"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Famille"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Fantasy"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Histoire"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Horreur"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Musique"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Mystère"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Romance"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Thriller"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Film télé"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Guerre"))
+    mycursor.execute('''insert ignore into liste_genres (id, nom) values(%s, %s)''', (5, "Western"))
 
     mydb.commit()
     mycursor.close()
@@ -44,7 +48,7 @@ def list():
     )
     mycursor = mydb.cursor()
 
-    mycursor.execute('''select j.nom, p.nom, prix, t.nom, description from liste_jeux j, liste_plateforme p, liste_type t where j.plateforme_id=p.id and j.type_id=t.id''')
+    mycursor.execute('''select j.nom, p.nom, prix, t.nom, description from liste_jeux j, liste_genres p, liste_type t where j.plateforme_id=p.id and j.type_id=t.id''')
     etuds = mycursor.fetchall()
     print(etuds)
     mycursor.close()
@@ -74,7 +78,7 @@ def plateforme():
     )
     mycursor = mydb.cursor()
 
-    mycursor.execute('''select * from liste_plateforme''')
+    mycursor.execute('''select * from liste_genres''')
     etuds = mycursor.fetchall()
     print(etuds)
     mycursor.close()
@@ -104,7 +108,7 @@ def add_plateforme(plateforme):
     )
 
     mycursor = mydb.cursor()
-    insert = 'insert into liste_plateforme(nom) values("' + plateforme + '")'
+    insert = 'insert into liste_genres(nom) values("' + plateforme + '")'
     mycursor.execute(insert)
     mydb.commit()
 
