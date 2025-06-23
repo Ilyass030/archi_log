@@ -8,4 +8,4 @@ Les utilisateurs peuvent se suivre entre eux, dire s'ils ont vu ou aimer un film
 Chaque personne dans l'équipe est responsable d'une partie :
 - Loïc: base de donnée
 - Louisa:
-- Ilyass:
+- Ilyass:   

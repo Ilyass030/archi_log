@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link href="/static/liste.css" rel="stylesheet">
+    <title>Stim</title>
+  </head>
+  <body>
+    <h1>Liste des jeux</h1>
+    <table>
+        <thead>
+            <th>nom</th>
+            <th>plateforme</th>
+            <th>prix</th>
+            <th>type</th>
+            <th>description</th>
+        </thead>
+        {% for jeu in jeux %}
+        <tbody>
+            <td>
+                {{jeu[0]}}
+            </td>
+            <td>
+                {{jeu[1]}}
+            </td>
+            <td>
+                {{jeu[2]}}
+            </td>
+            <td>
+                {{jeu[3]}}
+            </td>
+            <td>
+                {{jeu[4]}}
+            </td>
+        </tbody>
+        {% endfor %}
+    </table>
+    <button onclick="location.href='/'">Ajouter un jeu</button>
+  </body>
+</html>
