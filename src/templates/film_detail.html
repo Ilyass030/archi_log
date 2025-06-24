@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Notation - {{ film.nom }}</title>
+</head>
+<body>
+  <h1>{{ film.nom }}</h1>
+  <form method="post">
+    <label for="note">Note (sur 5):</label>
+    <input type="number" name="note" min="0" max="5" step="0.1" value="{{ film.note or '' }}" required><br>
+
+    <label for="commentaire">Commentaire :</label><br>
+    <textarea name="commentaire" rows="4" cols="40">{{ film.commentaire or '' }}</textarea><br>
+
+    <button type="submit">Enregistrer</button>
+  </form>
+  <p><a href="{{ url_for('index') }}">← Retour</a></p>
+</body>
+</html>
