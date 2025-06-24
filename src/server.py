@@ -49,21 +49,22 @@ def add_plateforme():
 
 @app.route("/ajout_film", methods=["POST"])
 def add_film():
-    data = request.form
+    data = request.files
 
     #error handling
     if(data["nom"] == ""):
-        return render_template('add_film.html', error="Veuillez saisir un nom", Genres=modele.genre())
-    
-
-    if (modele.ajout_film(data["nom"], data["resume"], int(data["annee_sortie"]), data.getlist("genres[]")) == 1):
-        return render_template('add_film.html', error="Ce film est déjà dans la base de donnée", Genres=modele.genre())
-
-    return render_template("add_film.html", error="", Genres=modele.genre())
+        return render_template('index.html', error="Veuillez saisir un nom", Genres=modele.genre())
+    print(data["resume"])
+    print(int(data["annee_sortie"]))
+    for genre in data.getlist("genres[]"):
+        print(genre)
+    if (modele.add_film(data["nom"], data["resume"], int(data["annee_sortie"]), data.getlist("genres[]")) == 1):
+        return render_template('index.html', error="Ce film est déjà dans la base de donnée", Genres=modele.genre())
+    return render_template("index.html", error="", Genres=modele.genre())
 
 @app.route("/ajouter_film", methods=["GET"])
 def ajouter_film_form():
-    return render_template("index.html", Genres=modele.genre(), current_year=datetime.now().year)
+    return render_template("add_film.html", error="", Genres=modele.genre())
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
