@@ -48,7 +48,7 @@ def add_plateforme():
 
 
 @app.route("/ajout_film", methods=["POST"])
-def add_jeu():
+def add_film():
     data = request.form
 
     #error handling
