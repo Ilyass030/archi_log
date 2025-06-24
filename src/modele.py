@@ -81,6 +81,7 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     conn.commit()
     cursor.close()
     return 0
+
 def delete_film(nom, annee_sortie):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -103,6 +104,7 @@ def delete_film(nom, annee_sortie):
     cursor.close()
     conn.close()
     return 0
+
 # def list():
 #     mydb = mysql.connector.connect(
 #         host="localhost",
