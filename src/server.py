@@ -46,20 +46,19 @@ def add_plateforme():
     return general()
 
 
-@app.route("/liste", methods=["POST"])
+@app.route("/ajout_film", methods=["POST"])
 def add_jeu():
     data = request.form
 
     #error handling
     if(data["nom"] == ""):
-        return render_template('infos.html', error="Veuillez saisir un nom", Types=Types, Plateformes=Plateformes)
-    if(not data["prix"].isdigit()):
-        return render_template('infos.html', error="Veuillez saisir un nombre entier pour le prix", Types=Types, Plateformes=Plateformes)
-    if(data["description"] == ""):
-        return render_template('infos.html', error="Veuillez saisir une description", Types=Types, Plateformes=Plateformes)
+        return render_template('add_film.html', error="Veuillez saisir un nom", Genres=modele.genre())
     
-    modele.add_jeux(data["nom"], int(data["plateforme"]), int(data["prix"]), int(data["type"]), data["description"])
-    return render_template('liste.html', jeux=modele.list())
+
+    if (modele.ajout_film(data["nom"], data["resume"], int(data["annee_sortie"]), data.getlist("genres[]")) == 1):
+        return render_template('add_film.html', error="Ce film est déjà dans la base de donnée", Genres=modele.genre())
+
+    return render_template("add_film.html", error="", Genres=modele.genre())
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

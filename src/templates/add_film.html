@@ -7,21 +7,24 @@
   </head>
   <body>
     <h1>Ajouter un film</h1>
-    <form enclype="text/plain" method="POST" action="/liste">
+    <form enclype="text/plain" method="POST" action="/ajout_film">
       <label>Nom</label>
       <input type="text" name="nom">
       <br>
       <label>Resume</label>
-      <input type="text" name="description">
+      <input type="text" name="resume">
       <br>
       <label id="annee_sortie">Année de sortie</label>
       <br>
       <label>Genres</label>
-      <select name="genre">
+      <div>
         {% for genre in Genres %}
-        <option value={{genre[0]}}>{{genre[1]}}</option>
+          <label>
+            <input type="checkbox" name="genres[]" value="{{genre[0]}}">
+            {{genre[1]}}
+          </label><br>
         {% endfor %}
-      </select>
+      </div>
       <br>
 
       <input type="submit" name="soumettre">
