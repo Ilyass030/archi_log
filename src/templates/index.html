@@ -12,9 +12,9 @@
       <input type="text" name="nom">
       <br>
       <label>Plateforme</label>
-      <select name="plateforme">
-        {% for plateforme in Plateformes %}
-        <option value={{plateforme[0]}}>{{plateforme[1]}}</option>
+      <select name="genres">
+        {% for genre in Genres %}
+        <option value={{genre[0]}}>{{genre[1]}}</option>
         {% endfor %}
       </select>
       <br>
