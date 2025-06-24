@@ -1,34 +1,53 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Letterbossed</title>
-</head>
-<body>
-  <h1>Rechercher / Trier les films</h1>
-  <form method="get">
-    <input type="text" name="q" placeholder="Rechercher un film" value="{{ query }}">
-    <select name="genre">
-      <option value="">Tous les genres</option>
-      {% for g in genres %}
-        <option value="{{ g.id }}" {% if g.id|string == selected_genre %}selected{% endif %}>
-          {{ g.nom }}
-        </option>
-      {% endfor %}
-    </select>
-    <button type="submit">Rechercher</button>
-  </form>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link href="/static/info.css" rel="stylesheet">
+    <title>Stim</title>
+  </head>
+  <body>
+    <h1>Ajouter un jeu</h1>
+    <form enclype="text/plain" method="POST" action="/liste">
+      <label>Nom</label>
+      <input type="text" name="nom">
+      <br>
+      <label>Plateforme</label>
+      <select name="plateforme">
+        {% for plateforme in Plateformes %}
+        <option value={{plateforme[0]}}>{{plateforme[1]}}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <label>Prix</label>
+      <input type="text" name="prix">
+      <br>
+      <label>Type</label>
+      <select name="type">
+        {% for type in Types %}
+        <option value={{type[0]}}>{{type[1]}}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <label>Description</label>
+      <input type="text" name="description">
+      <br>
+      <input type="submit" name="soumettre">
+    </form>
 
-  <h2>Résultats</h2>
-  <ul>
-    {% for film in films %}
-      <li>
-        <a href="{{ url_for('film_detail', film_id=film.id) }}">{{ film.nom }}</a>
-        {% if film.note %} - Note : {{ film.note }} {% endif %}
-      </li>
-    {% else %}
-      <li>Aucun film trouvé.</li>
-    {% endfor %}
-  </ul>
-</body>
+    <button onclick="location.href='liste'">Liste des jeux</button>
+
+    <form enclype="text/plain" method="POST" action="/plateforme">
+      <label>Ajouter une plateforme</label>
+      <input type="text" name="plateforme">
+      <input type="submit" name="soumettre">
+    </form>
+
+    <form enclype="text/plain" method="POST" action="/type">
+      <label>Ajouter un type</label>
+      <input type="text" name="type">
+      <input type="submit" name="soumettre">
+    </form>
+
+    <h2 id="error">{{error}}</h1>
+  </body>
 </html>
