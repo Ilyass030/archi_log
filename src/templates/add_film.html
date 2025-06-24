@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link href="/static/info.css" rel="stylesheet">
+    <title>Genre</title>
+  </head>
+  <body>
+    <h1>Ajouter un film</h1>
+    <form enclype="text/plain" method="POST" action="/liste">
+      <label>Nom</label>
+      <input type="text" name="nom">
+      <br>
+      <label>Resume</label>
+      <input type="text" name="description">
+      <br>
+      <label id="annee_sortie">Année de sortie</label>
+      <br>
+      <label>Genres</label>
+      <select name="genre">
+        {% for genre in Genres %}
+        <option value={{genre[0]}}>{{genre[1]}}</option>
+        {% endfor %}
+      </select>
+      <br>
+
+      <input type="submit" name="soumettre">
+    </form>
+
+    <button onclick="location.href='liste'">Liste des jeux</button>
+
+    <form enclype="text/plain" method="POST" action="/plateforme">
+      <label>Ajouter une plateforme</label>
+      <input type="text" name="plateforme">
+      <input type="submit" name="soumettre">
+    </form>
+
+    <form enclype="text/plain" method="POST" action="/type">
+      <label>Ajouter un type</label>
+      <input type="text" name="type">
+      <input type="submit" name="soumettre">
+    </form>
+
+    <h2 id="error">{{error}}</h1>
+  </body>
+  <script defer src="{{url_for('static', filename='add_film.js')}}"></script>
+</html>

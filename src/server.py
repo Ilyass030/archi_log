@@ -10,7 +10,7 @@ CORS(app)
 @app.route("/")
 def general():
     modele.create_list()
-    return render_template("index.html", error="", Genres=modele.genre())
+    return render_template("add_film.html", error="", Genres=modele.genre())
 
 
 @app.route("/liste")
