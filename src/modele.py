@@ -14,7 +14,7 @@ def create_list():
     genres = [
         "Action", "Aventure", "Animation", "Comédie", "Crime", "Documentaire",
         "Drama", "Famille", "Fantasy", "Histoire", "Horreur", "Musique",
-        "Mystère", "Romance", "Thriller", "Film télé", "Guerre", "Western"
+        "Mystère", "Romance", "Thriller", "Science-fiction", "Film télé", "Guerre", "Western"
     ]
 
     for genre in genres:
@@ -66,11 +66,9 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     exist = cursor.execute(insert, val)
     if (exist != 0):
         return 1
-
     insert = '''INSERT OR IGNORE INTO liste_films (nom, resume, annee_sortie) VALUES (?, ?, ?)'''
     val = (nom, resume, annee_sortie)
     cursor.execute(insert, val)
-    
     # Récupère l'id du film (même si déjà existant)
     cursor.execute('SELECT id FROM liste_films WHERE nom=? AND annee_sortie=?', (nom, annee_sortie))
     film_id = cursor.fetchone()[0]
@@ -78,11 +76,33 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     # Ajoute la liaison avec chaque genre
     for genre_id in genre_ids:
         cursor.execute('INSERT OR IGNORE INTO film_genre (film_id, genre_id) VALUES (?, ?)', (film_id, genre_id))
+    print("test4")
     
     conn.commit()
     cursor.close()
     return 0
+def delete_film(nom, annee_sortie):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
 
+    cursor.execute('SELECT id FROM liste_films WHERE nom=? AND annee_sortie=?', (nom, annee_sortie))
+    film = cursor.fetchone()
+    if film is None:
+        cursor.close()
+        conn.close()
+        return 1
+    film_id = film[0]
+
+
+    cursor.execute('DELETE FROM film_genre WHERE film_id=?', (film_id,))
+
+
+    cursor.execute('DELETE FROM liste_films WHERE id=?', (film_id,))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return 0
 # def list():
 #     mydb = mysql.connector.connect(
 #         host="localhost",
