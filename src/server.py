@@ -4,28 +4,13 @@ from enum import Enum
 
 import modele
 
-class Types(Enum):
-    FPS = 0
-    Strategie = 1
-    Platformer = 2
-    Metroidvania = 3
-    Autre = 4
-
-class Plateformes(Enum):
-    PC = 0
-    Playstation = 1
-    XBox = 2
-    Nintendo = 3
-    Mobile = 4
-    Autre = 5
-
 app = Flask(__name__)
 CORS(app)
 
 @app.route("/")
 def general():
     modele.create_list()
-    return render_template("infos.html", error="", Types=modele.type(), Plateformes=modele.plateforme())
+    return render_template("index.html", error="")
 
 
 @app.route("/liste")
