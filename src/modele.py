@@ -37,7 +37,15 @@ def create_list():
     conn.close()
 
 
+def genre():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
 
+    cursor.execute('''select * from liste_genres''')
+    genre = cursor.fetchall()
+    print(genre)
+    cursor.close()
+    return(genre)
 
 # def list():
 #     mydb = mysql.connector.connect(
@@ -69,20 +77,7 @@ def create_list():
 #     mycursor.close()
 #     return(etuds)
 
-# def plateforme():
-#     mydb = mysql.connector.connect(
-#         host="localhost",
-#         user="root",
-#         password="leane0208",
-#         database="archi_logicielle"
-#     )
-#     mycursor = mydb.cursor()
 
-#     mycursor.execute('''select * from liste_genres''')
-#     etuds = mycursor.fetchall()
-#     print(etuds)
-#     mycursor.close()
-#     return(etuds)
 
 # def add_type(type):
 #     mydb = mysql.connector.connect(
