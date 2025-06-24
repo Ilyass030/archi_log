@@ -11,12 +11,25 @@
       <label>Nom</label>
       <input type="text" name="nom">
       <br>
-      <label>Plateforme</label>
-      <select name="genres">
+      <label>Genres</label>
+      <div>
+        {% for genre in Genres %}
+          <label>
+            <input type="checkbox" name="genres[]" value="{{genre[0]}}">
+            {{genre[1]}}
+          </label><br>
+        {% endfor %}
+      </div>
+      <!-- <select name="genres[]" multiple size="4">
         {% for genre in Genres %}
         <option value={{genre[0]}}>{{genre[1]}}</option>
         {% endfor %}
-      </select>
+      </select> -->
+      <!-- <select multiple name="genres">
+        {% for genre in Genres %}
+        <option value={{genre[0]}}>{{genre[1]}}</option>
+        {% endfor %}
+      </select> -->
       <br>
       <label>Prix</label>
       <input type="text" name="prix">

@@ -28,9 +28,19 @@ def create_list():
                 annee_sortie INTEGER,
                 nb_visionnage INTEGER DEFAULT 0,
                 nb_notes INTEGER DEFAULT 0,
-                note_moyenne REAL DEFAULT 0.0
+                note_moyenne REAL DEFAULT 0.0,
+                UNIQUE(nom, annee_sortie)
             )
         ''')
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS film_genre (
+        film_id INTEGER,
+        genre_id INTEGER,
+        PRIMARY KEY (film_id, genre_id),
+        FOREIGN KEY (film_id) REFERENCES liste_films(id),
+        FOREIGN KEY (genre_id) REFERENCES liste_genres(id)
+    )
+''')
     
     conn.commit()
     cursor.close()
@@ -46,6 +56,26 @@ def genre():
     print(genre)
     cursor.close()
     return(genre)
+
+def add_film(nom, resume, annee_sortie, genre_ids):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    insert = '''INSERT OR IGNORE INTO liste_films (nom, resume, annee_sortie) VALUES (?, ?, ?)'''
+    val = (nom, resume, annee_sortie)
+    cursor.execute(insert, val)
+    
+    # Récupère l'id du film (même si déjà existant)
+    cursor.execute('SELECT id FROM liste_films WHERE nom=? AND annee_sortie=?', (nom, annee_sortie))
+    film_id = cursor.fetchone()[0]
+
+    # Ajoute la liaison avec chaque genre
+    for genre_id in genre_ids:
+        cursor.execute('INSERT OR IGNORE INTO film_genre (film_id, genre_id) VALUES (?, ?)', (film_id, genre_id))
+    
+    conn.commit()
+    cursor.close()
+    return list_films()
 
 # def list():
 #     mydb = mysql.connector.connect(
