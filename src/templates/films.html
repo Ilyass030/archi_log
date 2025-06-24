@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liste des Films</title>
+</head>
+
+<!-- première page, avec une liste de films ! -->
+<body>
+    <h1>Liste des Films</h1>
+    <a href="/ajouter_film">
+        <button type="button">Ajouter un film</button>
+    </a>
+    <form method="get" action="/films">
+        <label for="genre">Genre :</label>
+        <select name="genre" id="genre">
+            <option value="">-- Tous --</option>
+            {% for genre in Genres %}
+                <option value="{{ genre[0] }}" {% if selected_genre == genre[0]|string %}selected{% endif %}>{{ genre[1] }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="annee">Année :</label>
+        <select name="annee" id="annee">
+            <option value="">-- Toutes --</option>
+            {% for a in Annees %}
+                <option value="{{ a }}" {% if selected_annee == a %}selected{% endif %}>{{ a }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="recherche">Recherche :</label>
+        <input type="text" name="recherche" value="{{ recherche }}" placeholder="Nom du film" />
+
+        <button type="submit">Filtrer</button>
+    </form>
+
+    <ul>
+    {% if films %}
+        {% for film in films %}
+            <li><strong>{{ film[1] }}</strong> ({{ film[3] }})<br>{{ film[2] }}</li>
+        {% endfor %}
+    {% else %}
+        <li>Pas de films encores notés</li>
+    {% endif %}
+    </ul>
+</body>
+</html>
