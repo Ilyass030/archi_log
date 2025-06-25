@@ -1,0 +1,5 @@
+#.exe
+__pycache__/
+
+#database (cause des pbs de merge constant)
+*.db
