@@ -7,7 +7,7 @@ Les utilisateurs peuvent se suivre entre eux, dire s'ils ont vu ou aimer un film
 ### Organisation
 Chaque personne dans l'équipe est responsable d'une partie :
 - Loïc:  Flask coté serveur
-- Louisa: Flask coté front et interaction avec le back-end 
+- Louiza: Flask coté front et interaction avec le back-end 
 - Ilyass:  Base de donnée (sqlite & python)
 Cela, bien sûr, n’empêche pas de travailler ensemble sur certaines parties : l’entraide est une force.
 

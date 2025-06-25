@@ -42,6 +42,70 @@ def create_list():
     )
 ''')
     
+    cursor.execute('''
+    CRETE TABLE IF NOT EXISTS utilisateur (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nom TEXT NOT NULL,
+        nb_visionnage INTEGER DEFAULT 0,
+        nb_notes INTEGER DEFAULT 0,
+        nb_likes INTEGER DEFAULT 0
+    )
+''')
+    cursor.execute('''CREATE TABLE IF NOT EXISTS utilisateur_film (
+        utilisateur_id INTEGER,
+        film_id INTEGER,
+        visionnage INTEGER DEFAULT 0,
+        like INTEGER DEFAULT 0,
+        note INTEGER DEFAULT 0,
+        PRIMARY KEY (film_id, genre_id),
+        FOREIGN KEY (film_id) REFERENCES liste_films(id),
+        FOREIGN KEY (genre_id) REFERENCES liste_genres(id)
+    )
+''')
+    cursor.execute('''CREATE TABLE IF NOT EXISTS utilisateur_utilisateur (
+        utilisateur_id INTEGER,
+        ami_id INTEGER,
+        PRIMARY KEY (utilisateur_id, ami_id),
+        FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id),
+        FOREIGN KEY (ami_id) REFERENCES utilisateur(id)
+    )
+''')
+    
+    cursor.execute('''CREATE TABLE IF NOT EXISTS professionnel (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nom TEXT NOT NULL,
+        prenom TEXT,
+        nationalite TEXT,
+        date_naissance TEXT,
+        date_deces TEXT, 
+    )
+''')
+    
+    cursor.execute('''CREATE TABLE IF NOT EXISTS metier (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nom TEXT NOT NULL,
+    )
+''')
+    
+    cursor.execute('''CREATE TABLE IF NOT EXISTS professionnel_metier (
+        professionnel_id INTEGER,
+        metier_id INTEGER,
+        PRIMARY KEY (professionnel_id, metier_id),
+        FOREIGN KEY (professionnel_id) REFERENCES professionnel(id),
+        FOREIGN KEY (metier_id) REFERENCES metier(id)
+    )
+''')
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS film_professionnel (
+        film_id INTEGER,
+        professionnel_id INTEGER,
+        PRIMARY KEY (film_id, professionnel_id),
+        FOREIGN KEY (film_id) REFERENCES liste_films(id),
+        FOREIGN KEY (professionnel_id) REFERENCES professionnel(id)
+    )   
+''')
+                   
+    
     conn.commit()
     cursor.close()
     conn.close()
@@ -104,6 +168,51 @@ def delete_film(nom, annee_sortie):
     cursor.close()
     conn.close()
     return 0
+
+# def search_film(nom,genre_id,annee):
+#     conn = sqlite3.connect('database.db')
+#     cursor = conn.cursor()
+
+#     cursor.execute('SELECT DISTINC f.* FROM liste_films f ' \
+#     'JOIN film_genre fg ON f.id = fg.film_id ' \
+#     'JOIN liste_genres g ON fg.genre_id = g.id ' \
+#     'WHERE f.nom LIKE ? ' \
+#     'AND g.id LIKE ? ' \
+#     'AND f.annee_sortie LIKE ?',
+#     ('%' + nom + '%', genre_id , annee))
+    # result = cursor.fetchall()
+    # cursor.close()
+    # conn.close()
+    # return result
+
+def search_film(nom=None, genre_id=None, annee=None):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    query = '''
+        SELECT DISTINCT f.*
+        FROM liste_films f
+        LEFT JOIN film_genre fg ON f.id = fg.film_id
+        LEFT JOIN liste_genres g ON fg.genre_id = g.id
+        WHERE 1=1
+    '''
+    params = []
+
+    if nom:
+        query += " AND f.nom LIKE ?"
+        params.append(f"%{nom}%")
+    if genre_id:
+        query += " AND g.id = ?"
+        params.append(genre_id)
+    if annee:
+        query += " AND f.annee_sortie = ?"
+        params.append(annee)
+
+    cursor.execute(query, params)
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
 
 # def list():
 #     mydb = mysql.connector.connect(
