@@ -10,6 +10,11 @@ for (var annee = currentYear; annee > 1880; annee--)
 var select = document.createElement("select");
 select.name = "annee_sortie";
 
+var option = document.createElement("option");
+option.value = 0;
+option.text = "inconnu";
+select.appendChild(option);
+
 for (const val of values)
 {
     var option = document.createElement("option");
@@ -17,6 +22,5 @@ for (const val of values)
     option.text = val;
     select.appendChild(option);
 }
-
 
 document.getElementById("annee_sortie").after(select);

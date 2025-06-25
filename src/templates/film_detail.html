@@ -3,38 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <link href="/static/liste.css" rel="stylesheet">
-    <title>Stim</title>
+    <title>{{Film[0]}}</title>
   </head>
   <body>
-    <h1>Liste des jeux</h1>
-    <table>
-        <thead>
-            <th>nom</th>
-            <th>plateforme</th>
-            <th>prix</th>
-            <th>type</th>
-            <th>description</th>
-        </thead>
-        {% for jeu in jeux %}
-        <tbody>
-            <td>
-                {{jeu[0]}}
-            </td>
-            <td>
-                {{jeu[1]}}
-            </td>
-            <td>
-                {{jeu[2]}}
-            </td>
-            <td>
-                {{jeu[3]}}
-            </td>
-            <td>
-                {{jeu[4]}}
-            </td>
-        </tbody>
-        {% endfor %}
-    </table>
-    <button onclick="location.href='/'">Ajouter un jeu</button>
+    <h1>{{Film[0]}}</h1>
+    <h2>Sorti en {{Film[1]}}</h2>
+    <h2>Résumé</h2>
+    <p>{{Film[2]}}</p>
+    <br>
+    {% for genre in Genres %}
+        <p class="afficher_genre">{{genre[1]}}</p>
+    {% endfor %}
+    <button onclick="location.href='/'">Page d'accueil</button>
   </body>
 </html>

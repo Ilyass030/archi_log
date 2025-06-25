@@ -11,7 +11,7 @@ CORS(app)
 @app.route("/")
 def general():
     modele.create_list()
-    return render_template("films.html", error="", Genres=modele.genre())
+    return render_template("films.html", Genres=modele.genre())
 
 
 @app.route("/liste")
@@ -55,18 +55,20 @@ def add_film():
     if(data["nom"] == ""):
         return render_template('index.html', error="Veuillez saisir un nom", Genres=modele.genre())
     print(data)
-    print(data["nom"])
-    print(data["resume"])
-    print(int(data["annee_sortie"]))
-    for genre in data.getlist("genres[]"):
-        print(genre)
     if (modele.add_film(data["nom"], data["resume"], int(data["annee_sortie"]), data.getlist("genres[]")) == 1):
         return render_template('index.html', error="Ce film est déjà dans la base de donnée", Genres=modele.genre())
     return render_template("index.html", error="", Genres=modele.genre())
 
+
 @app.route("/ajouter_film", methods=["GET"])
 def ajouter_film_form():
     return render_template("index.html", error="", Genres=modele.genre())
+
+@app.route("/search_film", methods=["POST"])
+def search_film():
+    data = request.form
+    print(int(data["annee_sortie"]))
+    return render_template("films.html", Genres=modele.genre(), films=modele.search_film(data.get("name", None), data.getlist("genres[]", None), data.get("annee_sortie", None)))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

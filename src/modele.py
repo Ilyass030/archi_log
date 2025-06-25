@@ -43,7 +43,7 @@ def create_list():
 ''')
     
     cursor.execute('''
-    CRETE TABLE IF NOT EXISTS utilisateur (
+    CREATE TABLE IF NOT EXISTS utilisateur (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nom TEXT NOT NULL,
         nb_visionnage INTEGER DEFAULT 0,
@@ -57,9 +57,9 @@ def create_list():
         visionnage INTEGER DEFAULT 0,
         like INTEGER DEFAULT 0,
         note INTEGER DEFAULT 0,
-        PRIMARY KEY (film_id, genre_id),
+        PRIMARY KEY (film_id, utilisateur_id),
         FOREIGN KEY (film_id) REFERENCES liste_films(id),
-        FOREIGN KEY (genre_id) REFERENCES liste_genres(id)
+        FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id)
     )
 ''')
     cursor.execute('''CREATE TABLE IF NOT EXISTS utilisateur_utilisateur (
@@ -77,13 +77,13 @@ def create_list():
         prenom TEXT,
         nationalite TEXT,
         date_naissance TEXT,
-        date_deces TEXT, 
+        date_deces TEXT
     )
 ''')
     
     cursor.execute('''CREATE TABLE IF NOT EXISTS metier (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nom TEXT NOT NULL,
+        nom TEXT NOT NULL
     )
 ''')
     
@@ -114,7 +114,6 @@ def create_list():
 def genre():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-
     cursor.execute('''select * from liste_genres''')
     genre = cursor.fetchall()
     print(genre)
@@ -127,8 +126,9 @@ def add_film(nom, resume, annee_sortie, genre_ids):
 
     insert = '''SELECT COUNT(id) FROM liste_films WHERE nom=? AND annee_sortie=?'''
     val=(nom, annee_sortie)
-    exist = cursor.execute(insert, val)
-    if (exist != 0):
+    exist = cursor.execute(insert, val).fetchall()[0]
+    print(exist)
+    if (exist[0] != 0):
         return 1
     insert = '''INSERT OR IGNORE INTO liste_films (nom, resume, annee_sortie) VALUES (?, ?, ?)'''
     val = (nom, resume, annee_sortie)
@@ -140,7 +140,6 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     # Ajoute la liaison avec chaque genre
     for genre_id in genre_ids:
         cursor.execute('INSERT OR IGNORE INTO film_genre (film_id, genre_id) VALUES (?, ?)', (film_id, genre_id))
-    print("test4")
     
     conn.commit()
     cursor.close()
@@ -185,7 +184,7 @@ def delete_film(nom, annee_sortie):
     # conn.close()
     # return result
 
-def search_film(nom=None, genre_id=None, annee=None):
+def search_film(nom, genre_id, annee):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
@@ -193,23 +192,40 @@ def search_film(nom=None, genre_id=None, annee=None):
         SELECT DISTINCT f.*
         FROM liste_films f
         LEFT JOIN film_genre fg ON f.id = fg.film_id
-        LEFT JOIN liste_genres g ON fg.genre_id = g.id
         WHERE 1=1
     '''
+
+    cursor.execute(query)
+    film_id = cursor.fetchall()
+
+    print(film_id)
     params = []
 
     if nom:
         query += " AND f.nom LIKE ?"
         params.append(f"%{nom}%")
-    if genre_id:
-        query += " AND g.id = ?"
-        params.append(genre_id)
-    if annee:
-        query += " AND f.annee_sortie = ?"
-        params.append(annee)
 
+    if genre_id:
+        query += '''AND NOT EXISTS(SELECT id FROM liste_genres g WHERE g.id IN(?'''
+        params.append(genre_id[0])
+        for i in range(1, len(genre_id)):
+            query += " ,?"
+            params.append(genre_id[i])
+        query += ''') AND  NOT EXISTS(
+                    SELECT * FROM liste_films ftg
+                    WHERE f.id = ftg.id
+                    AND fg.genre_id = g.id))'''
+
+    # if annee:
+    #     query += " AND f.annee_sortie = ?"
+    #     params.append(annee)
+
+    print(query)
+    for elem in params:
+        print(params)
     cursor.execute(query, params)
     result = cursor.fetchall()
+    print(annee)
     cursor.close()
     conn.close()
     return result

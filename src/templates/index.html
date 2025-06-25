@@ -23,7 +23,6 @@
           {{genre[1]}}
         </label><br>
       {% endfor %}
-      </select>
       <br><br>
 
       <label>Resume</label>
@@ -34,8 +33,8 @@
     </form>
     <a href="/">
       <button type="button">Page d'accueil</button>
-  </a>
-  <h2 id="error">{{error}}</h1>
+    </a>
+    <h2 id="error">{{error}}</h2>
   </body>
   <script defer src="{{url_for('static', filename='add_film.js')}}"></script>
 </html>
