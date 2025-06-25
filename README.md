@@ -11,8 +11,5 @@ Chaque personne dans l'équipe est responsable d'une partie :
 - Ilyass:  Base de donnée (sqlite & python)
 Cela, bien sûr, n’empêche pas de travailler ensemble sur certaines parties : l’entraide est une force.
 
-
-<details>
-  <summary>MCD</summary>
-![image](MCD.png)
-</details>
+### MCD
+![MCD non affichable](MCD.png)
