@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="/static/films.css" rel="stylesheet">
         <title>Liste des Films</title>
     </head>
 
@@ -32,10 +33,15 @@
 
         <ul>
         {% if films %}
+            <form id="film_detail" method="post" action="/film_detail">
             {% for film in films %}
-                <p>{{film[0]}}</p>
-                <!-- <li><strong>{{ film[1] }}</strong> ({{ film[3] }})<br>{{ film[2] }}</li> -->
+                <div class="onefilm" onclick="document.getElementById('film_detail').submit();">
+                <li><strong>{{ film[1] }}</strong> ({{ film[3] }})<br>{{ film[2] }}</li>
+                <input type="hidden" name="film_id" value="{{film[0]}}">
+                </div>
             {% endfor %}
+            </form>
+
         {% else %}
             <li>Pas de films dans la base de données</li>
         {% endif %}

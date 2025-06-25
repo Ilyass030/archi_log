@@ -116,9 +116,28 @@ def genre():
     cursor = conn.cursor()
     cursor.execute('''select * from liste_genres''')
     genre = cursor.fetchall()
-    print(genre)
     cursor.close()
+    conn.close()
     return(genre)
+
+def get_film(film_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    film = cursor.execute('''SELECT * FROM liste_films f WHERE f.id=?''', film_id).fetchall()
+    cursor.close()
+    conn.close()
+    return(film)
+
+def film_genres(film_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''SELECT * FROM liste_genres g 
+                    JOIN film_genre fg ON g.id=fg.genre_id
+                    WHERE ?=fg.film_id''', film_id)
+    film_genres = cursor.fetchall()
+    print(film_genres)
+    cursor.close()
+    return(film_genres)
 
 def add_film(nom, resume, annee_sortie, genre_ids):
     conn = sqlite3.connect('database.db')
@@ -139,11 +158,13 @@ def add_film(nom, resume, annee_sortie, genre_ids):
 
     # Ajoute la liaison avec chaque genre
     for genre_id in genre_ids:
+        print(genre_id)
         cursor.execute('INSERT OR IGNORE INTO film_genre (film_id, genre_id) VALUES (?, ?)', (film_id, genre_id))
     
     conn.commit()
     cursor.close()
     return 0
+
 
 def delete_film(nom, annee_sortie):
     conn = sqlite3.connect('database.db')
@@ -216,16 +237,14 @@ def search_film(nom, genre_id, annee):
                     WHERE f.id = ftg.id
                     AND fg.genre_id = g.id))'''
 
-    # if annee:
-    #     query += " AND f.annee_sortie = ?"
-    #     params.append(annee)
+    if annee:
+        query += " AND f.annee_sortie = ?"
+        params.append(annee)
 
     print(query)
-    for elem in params:
-        print(params)
+
     cursor.execute(query, params)
     result = cursor.fetchall()
-    print(annee)
     cursor.close()
     conn.close()
     return result

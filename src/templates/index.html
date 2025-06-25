@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <h2 id="error">{{error}}</h2>
     <title>Ajouter un film</title>
     <link href="/static/info.css" rel="stylesheet">
   </head>
@@ -34,7 +35,6 @@
     <a href="/">
       <button type="button">Page d'accueil</button>
     </a>
-    <h2 id="error">{{error}}</h2>
   </body>
   <script defer src="{{url_for('static', filename='add_film.js')}}"></script>
 </html>

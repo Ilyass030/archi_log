@@ -14,39 +14,6 @@ def general():
     return render_template("films.html", Genres=modele.genre())
 
 
-@app.route("/liste")
-def go_to():
-    return render_template('liste.html', jeux=modele.list())
-
-
-@app.route("/type", methods=["POST"])
-def add_type():
-    type = request.form["type"]
-    if (type == "" or len(type) > 20):
-        return render_template('infos.html', error="Veuillez saisir un type avec moins de 20 caractêres")
-    types = modele.type()
-
-    for elem in types:
-        if (elem[1] == type):
-            return render_template('info.html', error="Ce type de jeux est déjà listé")
-    modele.add_type(type)
-    return general()
-
-
-@app.route("/plateforme", methods=["POST"])
-def add_plateforme():
-    plateforme = request.form["plateforme"]
-    if (plateforme == "" or len(plateforme) > 20):
-        return render_template('infos.html', error="Veuillez saisir une plateforme avec moins de 20 caractêres")
-    plateformes = modele.type()
-
-    for elem in plateformes:
-        if (elem[1] == plateforme):
-            return render_template('info.html', error="Cette plateforme est déjà listée")
-    modele.add_plateforme(plateforme)
-    return general()
-
-
 @app.route("/ajout_film", methods=["POST"])
 def add_film():
     data = request.form
@@ -67,8 +34,12 @@ def ajouter_film_form():
 @app.route("/search_film", methods=["POST"])
 def search_film():
     data = request.form
-    print(int(data["annee_sortie"]))
     return render_template("films.html", Genres=modele.genre(), films=modele.search_film(data.get("name", None), data.getlist("genres[]", None), data.get("annee_sortie", None)))
+
+@app.route("/film_detail", methods=["POST"])
+def film_detail():
+    film_id = request.form["film_id"]
+    return render_template("film_detail.html", Film=modele.get_film(film_id), Genres=modele.film_genres(film_id))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
