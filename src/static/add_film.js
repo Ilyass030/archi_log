@@ -8,7 +8,7 @@ for (var annee = currentYear; annee > 1880; annee--)
 }
 
 var select = document.createElement("select");
-select.name = "genre";
+select.name = "annee_sortie";
 
 for (const val of values)
 {

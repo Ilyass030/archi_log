@@ -49,11 +49,13 @@ def add_plateforme():
 
 @app.route("/ajout_film", methods=["POST"])
 def add_film():
-    data = request.files
+    data = request.form
 
     #error handling
     if(data["nom"] == ""):
         return render_template('index.html', error="Veuillez saisir un nom", Genres=modele.genre())
+    print(data)
+    print(data["nom"])
     print(data["resume"])
     print(int(data["annee_sortie"]))
     for genre in data.getlist("genres[]"):
@@ -64,7 +66,7 @@ def add_film():
 
 @app.route("/ajouter_film", methods=["GET"])
 def ajouter_film_form():
-    return render_template("add_film.html", error="", Genres=modele.genre())
+    return render_template("index.html", error="", Genres=modele.genre())
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
