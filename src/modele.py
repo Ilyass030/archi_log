@@ -110,6 +110,7 @@ def create_list():
     cursor.close()
     conn.close()
 
+##__________________ Fonctions de gestion des films __________________##
 
 def genre():
     conn = sqlite3.connect('database.db')
@@ -189,6 +190,39 @@ def delete_film(nom, annee_sortie):
     conn.close()
     return 0
 
+def modify_film(film_id, nom=None, resume=None, annee_sortie=None, genre_ids=None):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    updates = []
+    params = []
+    if nom is not None:
+        updates.append("nom=?")
+        params.append(nom)
+    if resume is not None:
+        updates.append("resume=?")
+        params.append(resume)
+    if annee_sortie is not None:
+        updates.append("annee_sortie=?")
+        params.append(annee_sortie)
+
+    if updates:
+        query = f"UPDATE liste_films SET {', '.join(updates)} WHERE id=?"
+        params.append(film_id)
+        cursor.execute(query, params)
+
+    # Mettre à jour les genres si demandé
+    if genre_ids is not None:
+        cursor.execute('DELETE FROM film_genre WHERE film_id=?', (film_id,))
+        for genre_id in genre_ids:
+            cursor.execute('INSERT OR IGNORE INTO film_genre (film_id, genre_id) VALUES (?, ?)', (film_id, genre_id))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return 0
+    return 0
+
 # def search_film(nom,genre_id,annee):
 #     conn = sqlite3.connect('database.db')
 #     cursor = conn.cursor()
@@ -208,6 +242,8 @@ def delete_film(nom, annee_sortie):
 def search_film(nom, genre_id, annee):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
+
+    
 
     query = '''
         SELECT DISTINCT f.*
@@ -248,6 +284,65 @@ def search_film(nom, genre_id, annee):
     cursor.close()
     conn.close()
     return result
+
+##__________________ Fonctions de gestion des utilisateurs __________________##
+
+
+def add_utilisateur(nom):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute('INSERT OR IGNORE INTO utilisateur (nom) VALUES (?)', (nom,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def add_film_utilisateur(utilisateur_id, film_id, visionnage=0, like=0, note=0): #pas sur que c a soit ca
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute('INSERT OR IGNORE INTO utilisateur_film (utilisateur_id, film_id, visionnage, like, note) VALUES (?, ?, ?, ?, ?)',
+                   (utilisateur_id, film_id, visionnage, like, note))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def add_ami(utilisateur_id, ami_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute('INSERT OR IGNORE INTO utilisateur_utilisateur (utilisateur_id, ami_id) VALUES (?, ?)', (utilisateur_id, ami_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+##__________________ Fonctions de gestion des équipes/professionnel... __________________##
+
+
+
+def add_professionnel(nom, prenom=None, nationalite=None, date_naissance=None, date_deces=None):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute('INSERT OR IGNORE INTO professionnel (nom, prenom, nationalite, date_naissance, date_deces) VALUES (?, ?, ?, ?, ?)',
+                   (nom, prenom, nationalite, date_naissance, date_deces))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def add_metier(nom):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute('INSERT OR IGNORE INTO metier (nom) VALUES (?)', (nom,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def add_professionnel_metier(professionnel_id, metier_id):#jsp s'il l en faut une
+
+
+    
 
 # def list():
 #     mydb = mysql.connector.connect(
