@@ -170,7 +170,7 @@ def delete_film(id_film):
 
     # cursor.execute('SELECT id FROM liste_films WHERE id=?', (id_film,))
     # film = cursor.fetchone()
-    film = get_film((id_film,))
+    film = get_film(id_film)
     if film is None:
         cursor.close()
         conn.close()

@@ -11,7 +11,7 @@ async function ajouter_film(e, form) {
 
     const submit = document.getElementById('submit_film');
     submit.disabled = true;
-    setTimeout(() => submit.disabled = false, 2000);
+    setTimeout(() => submit.disabled = false, 1000);
 
     jsonifyForm = {genres : []};
     const readable_form = new FormData(form)
@@ -21,7 +21,6 @@ async function ajouter_film(e, form) {
         else
             jsonifyForm.genres.push({"genre": pair[1]});
     }
-
 
     const response = await fetch("/ajout_film",
         { method: 'POST',

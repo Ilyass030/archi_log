@@ -48,26 +48,28 @@ def ajouter_film_form():
 
 @app.route("/search_film", methods=["POST"])
 def search_film():
-    data = request.form
+    print(request.content_encoding)
+    data = request.json
 
     annee = int(data["annee_sortie"])
     nom = data["nom"]
-    # genres = []
-    # for pair in data["genres"]:
-    #     genres.append(pair["genre"])
+    genres = []
+    for pair in data["genres"]:
+        genres.append(pair["genre"])
+
     if (annee == 0):
         annee = None
 
     if nom=="":
         nom = None
 
-
-    
-    return render_template("films.html", Genres=modele.genre(), films=modele.search_film(data.get("name", None), data.getlist("genres[]", None), annee))
-
+    return_value = modele.search_film(nom, genres, annee)
+    print(return_value)
+    return jsonify(return_value)
 
 @app.route("/film_detail", methods=["POST"])
 def film_detail():
+    print(request.form)
     film_id = request.form["film_id"]
     return render_template("film_detail.html", Film=modele.get_film(film_id), Genres=modele.film_genres(film_id))
 
