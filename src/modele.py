@@ -87,23 +87,17 @@ def create_list():
     )
 ''')
     
-    cursor.execute('''CREATE TABLE IF NOT EXISTS professionnel_metier (
+    cursor.execute('''CREATE TABLE IF NOT EXISTS professionnel_metier_film (
         professionnel_id INTEGER,
         metier_id INTEGER,
-        PRIMARY KEY (professionnel_id, metier_id),
+        film_id INTEGER,
+        PRIMARY KEY (professionnel_id, metier_id, film_id),
         FOREIGN KEY (professionnel_id) REFERENCES professionnel(id),
         FOREIGN KEY (metier_id) REFERENCES metier(id)
+        FOREIGN KEY (film_id) REFERENCES liste_films(id)
     )
 ''')
 
-    cursor.execute('''CREATE TABLE IF NOT EXISTS film_professionnel (
-        film_id INTEGER,
-        professionnel_id INTEGER,
-        PRIMARY KEY (film_id, professionnel_id),
-        FOREIGN KEY (film_id) REFERENCES liste_films(id),
-        FOREIGN KEY (professionnel_id) REFERENCES professionnel(id)
-    )   
-''')
                    
     
     conn.commit()
@@ -167,28 +161,28 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     return 0
 
 
-def delete_film(nom, annee_sortie):
+def delete_film(id_film):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    cursor.execute('SELECT id FROM liste_films WHERE nom=? AND annee_sortie=?', (nom, annee_sortie))
-    film = cursor.fetchone()
+    # cursor.execute('SELECT id FROM liste_films WHERE id=?', (id_film,))
+    # film = cursor.fetchone()
+    film = get_film((id_film,))
     if film is None:
         cursor.close()
         conn.close()
-        return 1
-    film_id = film[0]
+        return 0
+    # film_id = film[0]
+
+    cursor.execute('DELETE FROM film_genre WHERE film_id=?', (id_film,))
 
 
-    cursor.execute('DELETE FROM film_genre WHERE film_id=?', (film_id,))
-
-
-    cursor.execute('DELETE FROM liste_films WHERE id=?', (film_id,))
+    cursor.execute('DELETE FROM liste_films WHERE id=?', (id_film,))
 
     conn.commit()
     cursor.close()
     conn.close()
-    return 0
+    return 1
 
 def modify_film(film_id, nom=None, resume=None, annee_sortie=None, genre_ids=None):
     conn = sqlite3.connect('database.db')
@@ -239,7 +233,7 @@ def modify_film(film_id, nom=None, resume=None, annee_sortie=None, genre_ids=Non
     # conn.close()
     # return result
 
-def search_film(nom, genre_id, annee):
+def search_film(nom=None, genre_id=None, annee=None):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
@@ -339,7 +333,7 @@ def add_metier(nom):
     cursor.close()
     conn.close()
 
-def add_professionnel_metier(professionnel_id, metier_id):#jsp s'il l en faut une
+#def add_professionnel_metier(professionnel_id, metier_id):#jsp s'il l en faut une
 
 
     

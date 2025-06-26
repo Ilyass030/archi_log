@@ -15,5 +15,9 @@
         <p class="afficher_genre">{{genre[1]}}</p>
     {% endfor %}
     <button onclick="location.href='/'">Page d'accueil</button>
+    <form method="POST" action="/delete_film">
+      <input type="hidden" name="film_id" value="{{Film[0][0]}}">
+      <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer ce film ?');">Supprimer le film</button>
+    </form>
   </body>
 </html>

@@ -17,12 +17,12 @@
       <label id="annee_sortie">Année de sortie</label>
       <br>
       <label>Genres</label>
-      <div>
+      <div class="genres-checkboxes">
         {% for genre in Genres %}
           <label>
             <input type="checkbox" name="genres[]" value="{{genre[0]}}">
             {{genre[1]}}
-          </label><br>
+          </label>
         {% endfor %}
       </div>
       <br>

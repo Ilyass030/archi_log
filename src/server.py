@@ -41,5 +41,19 @@ def film_detail():
     film_id = request.form["film_id"]
     return render_template("film_detail.html", Film=modele.get_film(film_id), Genres=modele.film_genres(film_id))
 
+@app.route("/delete_film", methods=["POST"])
+def delete_film_route():
+    film_id = request.form["film_id"]
+    if modele.delete_film(film_id):
+        return render_template("films.html", Genres=modele.genre(), films=modele.search_film())
+    else:
+        return render_template("film_detail.html", Film=modele.get_film(film_id), Genres=modele.film_genres(film_id), error="Erreur lors de la suppression")
+    
+# @app.route("/update_film", methods=["POST"])
+# def update_film():
+  
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
+
