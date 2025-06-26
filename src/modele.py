@@ -221,7 +221,6 @@ def modify_film(film_id, nom=None, resume=None, annee_sortie=None, genre_ids=Non
     cursor.close()
     conn.close()
     return 0
-    return 0
 
 # def search_film(nom,genre_id,annee):
 #     conn = sqlite3.connect('database.db')
@@ -339,7 +338,7 @@ def add_metier(nom):
     cursor.close()
     conn.close()
 
-def add_professionnel_metier(professionnel_id, metier_id):#jsp s'il l en faut une
+# def add_professionnel_metier(professionnel_id, metier_id):#jsp s'il l en faut une
 
 
     

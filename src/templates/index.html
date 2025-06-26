@@ -2,13 +2,13 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <h2 id="error">{{error}}</h2>
+    <h2 id="error"></h2>
     <title>Ajouter un film</title>
     <link href="/static/info.css" rel="stylesheet">
   </head>
   <body>
     <h1>Ajouter un film</h1>
-    <form method="POST" action="/ajout_film">
+    <form method="POST" action="/ajout_film" id="ajout_film">
       <label for="nom">Nom du film :</label>
       <input type="text" id="nom" name="nom" required>
       <br><br>
@@ -28,13 +28,13 @@
 
       <label>Resume</label>
       <input type="text" name="resume">
-
+ 
       <br><br>
-      <button type="submit">Envoyer</button>
+      <button type="submit" id="submit_film">Envoyer</button>
     </form>
     <a href="/">
       <button type="button">Page d'accueil</button>
     </a>
   </body>
-  <script defer src="{{url_for('static', filename='add_film.js')}}"></script>
+  <script defer src="{{url_for('static', filename='index.js')}}"></script>
 </html>

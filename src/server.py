@@ -16,14 +16,25 @@ def general():
 
 @app.route("/ajout_film", methods=["POST"])
 def add_film():
-    data = request.form
+    print(request)
+    data = request.json
 
+    print(data)
+
+    return_value = {
+        'error': "Ce film est déjà dans la base de donnée"
+    }
     #error handling
     if(data["nom"] == ""):
         return render_template('index.html', error="Veuillez saisir un nom", Genres=modele.genre())
     print(data)
-    if (modele.add_film(data["nom"], data["resume"], int(data["annee_sortie"]), data.getlist("genres[]")) == 1):
-        return render_template('index.html', error="Ce film est déjà dans la base de donnée", Genres=modele.genre())
+    print(data["genres"])
+    genres = []
+    for pair in data["genres"]:
+        genres.append(pair["genre"])
+    if (modele.add_film(data["nom"], data["resume"], int(data["annee_sortie"]), genres) == 1):
+        return jsonify(return_value)
+        # return render_template('index.html', error="Ce film est déjà dans la base de donnée", Genres=modele.genre())
     return render_template("index.html", error="", Genres=modele.genre())
 
 
