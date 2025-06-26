@@ -147,9 +147,8 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     insert = '''SELECT COUNT(id) FROM liste_films WHERE nom=? AND annee_sortie=?'''
     val=(nom, annee_sortie)
     exist = cursor.execute(insert, val).fetchall()[0]
-    print(exist)
     if (exist[0] != 0):
-        return 1
+        return -1
     insert = '''INSERT OR IGNORE INTO liste_films (nom, resume, annee_sortie) VALUES (?, ?, ?)'''
     val = (nom, resume, annee_sortie)
     cursor.execute(insert, val)
@@ -164,7 +163,7 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     
     conn.commit()
     cursor.close()
-    return 0
+    return film_id
 
 
 def delete_film(nom, annee_sortie):
