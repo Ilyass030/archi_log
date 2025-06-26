@@ -16,25 +16,55 @@ def general():
 
 @app.route("/ajout_film", methods=["POST"])
 def add_film():
-    data = request.form
+    data = request.json
+    return_value = {} #type : dict
 
     #error handling
     if(data["nom"] == ""):
-        return render_template('index.html', error="Veuillez saisir un nom", Genres=modele.genre())
-    print(data)
-    if (modele.add_film(data["nom"], data["resume"], int(data["annee_sortie"]), data.getlist("genres[]")) == 1):
-        return render_template('index.html', error="Ce film est déjà dans la base de donnée", Genres=modele.genre())
-    return render_template("index.html", error="", Genres=modele.genre())
+        return_value["error"] = "Veuillez saisir un nom"
+        return jsonify(return_value)
+
+    genres = []
+    for pair in data["genres"]:
+        genres.append(pair["genre"])
+
+    annee = int(data["annee_sortie"])
+    if (annee == 0):
+        annee = None
+    
+    film_id = modele.add_film(data["nom"], data["resume"], annee, genres)
+    if (film_id < 0):
+        film_id *= -1
+        return_value["error"] = "Ce film est déjà dans la base de donnée"
+    return_value["film"] = modele.get_film(film_id)
+        # return render_template('index.html', error="Ce film est déjà dans la base de donnée", Genres=modele.genre())
+    return jsonify(return_value)
 
 
 @app.route("/ajouter_film", methods=["GET"])
 def ajouter_film_form():
     return render_template("index.html", error="", Genres=modele.genre())
 
+
 @app.route("/search_film", methods=["POST"])
 def search_film():
     data = request.form
-    return render_template("films.html", Genres=modele.genre(), films=modele.search_film(data.get("name", None), data.getlist("genres[]", None), data.get("annee_sortie", None)))
+
+    annee = int(data["annee_sortie"])
+    nom = data["nom"]
+    # genres = []
+    # for pair in data["genres"]:
+    #     genres.append(pair["genre"])
+    if (annee == 0):
+        annee = None
+
+    if nom=="":
+        nom = None
+
+
+    
+    return render_template("films.html", Genres=modele.genre(), films=modele.search_film(data.get("name", None), data.getlist("genres[]", None), annee))
+
 
 @app.route("/film_detail", methods=["POST"])
 def film_detail():

@@ -118,7 +118,7 @@ def genre():
 def get_film(film_id):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    film = cursor.execute('''SELECT * FROM liste_films f WHERE f.id=?''', film_id).fetchall()
+    film = cursor.execute('''SELECT * FROM liste_films f WHERE f.id=?''', (film_id,)).fetchall()
     cursor.close()
     conn.close()
     return(film)
@@ -128,9 +128,8 @@ def film_genres(film_id):
     cursor = conn.cursor()
     cursor.execute('''SELECT * FROM liste_genres g 
                     JOIN film_genre fg ON g.id=fg.genre_id
-                    WHERE ?=fg.film_id''', film_id)
+                    WHERE ?=fg.film_id''', (film_id,))
     film_genres = cursor.fetchall()
-    print(film_genres)
     cursor.close()
     return(film_genres)
 
@@ -138,27 +137,31 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    insert = '''SELECT COUNT(id) FROM liste_films WHERE nom=? AND annee_sortie=?'''
-    val=(nom, annee_sortie)
-    exist = cursor.execute(insert, val).fetchall()[0]
-    print(exist)
-    if (exist[0] != 0):
-        return 1
+    get_film_id = '''SELECT id FROM liste_films WHERE nom=?'''
+    val_id=[nom]
+
+    if annee_sortie:
+        get_film_id += " AND annee_sortie=?"
+        val_id.append(annee_sortie)
+    
+    exist = cursor.execute(get_film_id, val_id).fetchall()
+    if (len(exist) != 0):
+        return exist[0][0] * -1
+    
     insert = '''INSERT OR IGNORE INTO liste_films (nom, resume, annee_sortie) VALUES (?, ?, ?)'''
     val = (nom, resume, annee_sortie)
     cursor.execute(insert, val)
     # Récupère l'id du film (même si déjà existant)
-    cursor.execute('SELECT id FROM liste_films WHERE nom=? AND annee_sortie=?', (nom, annee_sortie))
+    cursor.execute(get_film_id, val_id)
     film_id = cursor.fetchone()[0]
 
     # Ajoute la liaison avec chaque genre
     for genre_id in genre_ids:
-        print(genre_id)
         cursor.execute('INSERT OR IGNORE INTO film_genre (film_id, genre_id) VALUES (?, ?)', (film_id, genre_id))
     
     conn.commit()
     cursor.close()
-    return 0
+    return film_id
 
 
 def delete_film(id_film):
@@ -215,7 +218,6 @@ def modify_film(film_id, nom=None, resume=None, annee_sortie=None, genre_ids=Non
     cursor.close()
     conn.close()
     return 0
-    return 0
 
 # def search_film(nom,genre_id,annee):
 #     conn = sqlite3.connect('database.db')
@@ -237,8 +239,6 @@ def search_film(nom=None, genre_id=None, annee=None):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    
-
     query = '''
         SELECT DISTINCT f.*
         FROM liste_films f
@@ -247,9 +247,6 @@ def search_film(nom=None, genre_id=None, annee=None):
     '''
 
     cursor.execute(query)
-    film_id = cursor.fetchall()
-
-    print(film_id)
     params = []
 
     if nom:
@@ -270,8 +267,6 @@ def search_film(nom=None, genre_id=None, annee=None):
     if annee:
         query += " AND f.annee_sortie = ?"
         params.append(annee)
-
-    print(query)
 
     cursor.execute(query, params)
     result = cursor.fetchall()
