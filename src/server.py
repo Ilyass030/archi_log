@@ -17,9 +17,8 @@ def general():
 @app.route("/ajout_film", methods=["POST"])
 def add_film():
     data = request.json
-    return_value = {} #type : dict
+    return_value = {}
 
-    #error handling
     if(data["nom"] == ""):
         return_value["error"] = "Veuillez saisir un nom"
         return jsonify(return_value)
@@ -31,13 +30,16 @@ def add_film():
     annee = int(data["annee_sortie"])
     if (annee == 0):
         annee = None
-    
-    film_id = modele.add_film(data["nom"], data["resume"], annee, genres)
+
+    # Récupère la note
+    note = data.get("note")
+    note = float(note) if note else None
+
+    film_id = modele.add_film(data["nom"], data["resume"], annee, genres, note)
     if (film_id < 0):
         film_id *= -1
         return_value["error"] = "Ce film est déjà dans la base de donnée"
     return_value["film"] = modele.get_film(film_id)
-        # return render_template('index.html', error="Ce film est déjà dans la base de donnée", Genres=modele.genre())
     return jsonify(return_value)
 
 
@@ -69,9 +71,13 @@ def search_film():
 
 @app.route("/film_detail", methods=["POST"])
 def film_detail():
-    print(request.form)
     film_id = request.form["film_id"]
-    return render_template("film_detail.html", Film=modele.get_film(film_id), Genres=modele.film_genres(film_id))
+    return render_template(
+        "film_detail.html",
+        Film=modele.get_film(film_id),
+        Genres=modele.film_genres(film_id),
+        Professionnels=modele.get_professionnels_film(film_id)  # <-- AJOUTE CET ARGUMENT
+    )
 
 @app.route("/delete_film", methods=["POST"])
 def delete_film_route():
@@ -81,6 +87,43 @@ def delete_film_route():
     else:
         return render_template("film_detail.html", Film=modele.get_film(film_id), Genres=modele.film_genres(film_id), error="Erreur lors de la suppression")
     
+@app.route("/add_professionnel", methods=["POST"])
+def add_professionnel_route():
+    film_id = request.form["film_id"]
+    nom = request.form["nom"]
+    prenom = request.form.get("prenom")
+    nationalite = request.form.get("nationalite")
+    date_naissance = request.form.get("date_naissance")
+    date_deces = request.form.get("date_deces")
+    metier = request.form["metier"]
+
+    # Ajoute le professionnel (fonction existante)
+    modele.add_professionnel(nom, prenom, nationalite, date_naissance, date_deces)
+    professionnel_id = modele.get_professionnel_id(nom, prenom)
+    metier_id = modele.get_or_create_metier(metier)
+    modele.add_professionnel_metier_film(professionnel_id, metier_id, film_id)
+
+    return jsonify({
+        "success": True,
+        "pro": {
+            "nom": nom,
+            "prenom": prenom,
+            "nationalite": nationalite,
+            "date_naissance": date_naissance,
+            "date_deces": date_deces,
+            "metier": metier
+        }
+    })
+
+@app.route("/delete_professionnel", methods=["POST"])
+def delete_professionnel_route():
+    film_id = request.form["film_id"]
+    professionnel_id = request.form["professionnel_id"]
+    metier = request.form["metier"]
+    metier_id = modele.get_or_create_metier(metier)
+    modele.delete_professionnel_metier_film(professionnel_id, metier_id, film_id)
+    return jsonify({"success": True})
+
 # @app.route("/update_film", methods=["POST"])
 # def update_film():
   

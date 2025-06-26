@@ -2,22 +2,59 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <link href="/static/liste.css" rel="stylesheet">
-    <title>{{Film[0]}}</title>
+    <link href="/static/film_detail.css" rel="stylesheet">
+    <title>{{Film[0][1]}}</title>
   </head>
   <body>
-    <h1>{{Film[0]}}</h1>
-    <h2>Sorti en {{Film[1]}}</h2>
-    <h2>Résumé</h2>
-    <p>{{Film[2]}}</p>
-    <br>
-    {% for genre in Genres %}
-        <p class="afficher_genre">{{genre[1]}}</p>
-    {% endfor %}
-    <button onclick="location.href='/'">Page d'accueil</button>
-    <form method="POST" action="/delete_film">
-      <input type="hidden" name="film_id" value="{{Film[0][0]}}">
-      <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer ce film ?');">Supprimer le film</button>
-    </form>
+    <div class="detail-container">
+      <h1>{{Film[0][1]}}</h1>
+      <div class="film-meta">
+        <span class="film-annee">Sorti en {{Film[0][3]}}</span>
+        <span class="film-genres">
+          {% for genre in Genres %}
+            <span class="afficher_genre">{{genre[1]}}</span>
+          {% endfor %}
+        </span>
+      </div>
+      <h2>Résumé</h2>
+      <p>{{Film[0][2]}}</p>
+
+      <h2>Équipe du film</h2>
+      <ul id="pro-list">
+        {% for pro in Professionnels %}
+          <li class="pro-item" data-pro-id="{{pro[0]}}" data-metier="{{pro[3]}}">
+            <div class="pro-infos">
+              <strong>{{pro[1]}} {{pro[2]}}</strong>
+              {% if pro[4] %}<span class="pro-meta">({{pro[4]}})</span>{% endif %}
+              {% if pro[5] %}<span class="pro-meta">, né(e) le {{pro[5]}}</span>{% endif %}
+              {% if pro[6] %}<span class="pro-meta">, décédé(e) le {{pro[6]}}</span>{% endif %}
+              <span class="pro-meta">— {{pro[3]}}</span>
+            </div>
+            <button class="delete-pro" type="button" title="Supprimer"></button>
+          </li>
+        {% endfor %}
+      </ul>
+      <button id="show-add-pro" type="button" class="btn-grey">Ajouter un professionnel</button>
+      <div id="add-pro-form" style="display:none; margin-top:16px;">
+        <form id="form-add-pro" method="post" action="/add_professionnel">
+          <input type="hidden" name="film_id" value="{{Film[0][0]}}">
+          <label>Nom : <input type="text" name="nom" required></label>
+          <label>Prénom : <input type="text" name="prenom"></label>
+          <label>Nationalité : <input type="text" name="nationalite"></label>
+          <label>Date de naissance : <input type="date" name="date_naissance"></label>
+          <label>Date de décès : <input type="date" name="date_deces"></label>
+          <label>Métier :
+            <input type="text" name="metier" required placeholder="ex: Réalisateur">
+          </label>
+          <button type="submit">Enregistrer</button>
+        </form>
+      </div>
+      <button onclick="location.href='/'" class="btn-grey">Page d'accueil</button>
+      <form method="POST" action="/delete_film">
+        <input type="hidden" name="film_id" value="{{Film[0][0]}}">
+        <input type="submit" value="Supprimer le film" class="btn-red" onclick="return confirm('Voulez-vous vraiment supprimer ce film ?');">
+      </form>
+    </div>
+    <script src="/static/film-detail.js"></script>
   </body>
 </html>

@@ -133,7 +133,7 @@ def film_genres(film_id):
     cursor.close()
     return(film_genres)
 
-def add_film(nom, resume, annee_sortie, genre_ids):
+def add_film(nom, resume, annee_sortie, genre_ids, note=None):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
@@ -147,15 +147,19 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     exist = cursor.execute(get_film_id, val_id).fetchall()
     if (len(exist) != 0):
         return exist[0][0] * -1
-    
-    insert = '''INSERT OR IGNORE INTO liste_films (nom, resume, annee_sortie) VALUES (?, ?, ?)'''
-    val = (nom, resume, annee_sortie)
+
+    # Ajoute la note si présente
+    if note is not None:
+        insert = '''INSERT OR IGNORE INTO liste_films (nom, resume, annee_sortie, note_moyenne, nb_notes) VALUES (?, ?, ?, ?, 1)'''
+        val = (nom, resume, annee_sortie, note)
+    else:
+        insert = '''INSERT OR IGNORE INTO liste_films (nom, resume, annee_sortie) VALUES (?, ?, ?)'''
+        val = (nom, resume, annee_sortie)
     cursor.execute(insert, val)
-    # Récupère l'id du film (même si déjà existant)
+
     cursor.execute(get_film_id, val_id)
     film_id = cursor.fetchone()[0]
 
-    # Ajoute la liaison avec chaque genre
     for genre_id in genre_ids:
         cursor.execute('INSERT OR IGNORE INTO film_genre (film_id, genre_id) VALUES (?, ?)', (film_id, genre_id))
     
@@ -208,7 +212,7 @@ def modify_film(film_id, nom=None, resume=None, annee_sortie=None, genre_ids=Non
         params.append(film_id)
         cursor.execute(query, params)
 
-    # Mettre à jour les genres si demandé
+
     if genre_ids is not None:
         cursor.execute('DELETE FROM film_genre WHERE film_id=?', (film_id,))
         for genre_id in genre_ids:
@@ -245,24 +249,15 @@ def search_film(nom=None, genre_id=None, annee=None):
         LEFT JOIN film_genre fg ON f.id = fg.film_id
         WHERE 1=1
     '''
-
-    cursor.execute(query)
     params = []
 
     if nom:
         query += " AND f.nom LIKE ?"
         params.append(f"%{nom}%")
 
-    if genre_id:
-        query += '''AND NOT EXISTS(SELECT id FROM liste_genres g WHERE g.id IN(?'''
-        params.append(genre_id[0])
-        for i in range(1, len(genre_id)):
-            query += " ,?"
-            params.append(genre_id[i])
-        query += ''') AND  NOT EXISTS(
-                    SELECT * FROM liste_films ftg
-                    WHERE f.id = ftg.id
-                    AND fg.genre_id = g.id))'''
+    if genre_id and len(genre_id) > 0:
+        query += " AND fg.genre_id IN (%s)" % ",".join("?"*len(genre_id))
+        params.extend(genre_id)
 
     if annee:
         query += " AND f.annee_sortie = ?"
@@ -270,9 +265,23 @@ def search_film(nom=None, genre_id=None, annee=None):
 
     cursor.execute(query, params)
     result = cursor.fetchall()
+
+    
+    films = []
+    for film in result:
+        cursor.execute('''
+            SELECT g.nom FROM liste_genres g
+            JOIN film_genre fg ON g.id = fg.genre_id
+            WHERE fg.film_id = ?
+        ''', (film[0],))
+        genres = [g[0] for g in cursor.fetchall()]
+        # film = (id, nom, resume, annee_sortie, nb_visionnage, nb_notes, note_moyenne)
+        # genres à la fin
+        films.append(list(film) + [genres])
+
     cursor.close()
     conn.close()
-    return result
+    return films
 
 ##__________________ Fonctions de gestion des utilisateurs __________________##
 
@@ -327,6 +336,66 @@ def add_metier(nom):
     conn.commit()
     cursor.close()
     conn.close()
+
+def get_professionnel_id(nom, prenom=None):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    if prenom:
+        cursor.execute('SELECT id FROM professionnel WHERE nom=? AND prenom=?', (nom, prenom))
+    else:
+        cursor.execute('SELECT id FROM professionnel WHERE nom=?', (nom,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return row[0] if row else None
+
+def get_or_create_metier(nom):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('INSERT OR IGNORE INTO metier (nom) VALUES (?)', (nom,))
+    conn.commit()
+    cursor.execute('SELECT id FROM metier WHERE nom=?', (nom,))
+    metier_id = cursor.fetchone()[0]
+    cursor.close()
+    conn.close()
+    return metier_id
+
+def add_professionnel_metier_film(professionnel_id, metier_id, film_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT OR IGNORE INTO professionnel_metier_film (professionnel_id, metier_id, film_id)
+        VALUES (?, ?, ?)
+    ''', (professionnel_id, metier_id, film_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def delete_professionnel_metier_film(professionnel_id, metier_id, film_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        DELETE FROM professionnel_metier_film
+        WHERE professionnel_id=? AND metier_id=? AND film_id=?
+    ''', (professionnel_id, metier_id, film_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def get_professionnels_film(film_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT p.id, p.nom, p.prenom, m.nom, p.nationalite, p.date_naissance, p.date_deces
+        FROM professionnel p
+        JOIN professionnel_metier_film pmf ON p.id = pmf.professionnel_id
+        JOIN metier m ON pmf.metier_id = m.id
+        WHERE pmf.film_id = ?
+    ''', (film_id,))
+    pros = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return pros
 
 #def add_professionnel_metier(professionnel_id, metier_id):#jsp s'il l en faut une
 

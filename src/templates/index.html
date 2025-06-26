@@ -8,43 +8,53 @@
   </head>
   <body>
     <h2 id="error"></h2>
-    <h2 id="succes"></h2>   
-      <form id="film_detail" method="post" action="/film_detail">
-          <div class="onefilm" onclick="document.getElementById('film_detail').submit();">
-            <li id="afficher_film"></li>
-            <input type="hidden" id="film_id" name="film_id">
+    <h2 id="succes"></h2>
+    <div class="add-film-container vertical">
+      <h1>Ajouter un film !</h1>
+      <form method="POST" action="/ajout_film" id="ajout_film">
+        <div class="row-fields">
+          <div class="form-row">
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" name="nom" required>
           </div>
+          <div class="form-row">
+            <label id="annee_sortie">Année</label>
+          </div>
+          <div class="form-row">
+            <label for="note">Note</label>
+            <select id="note" name="note" required>
+              <option value="">Note</option>
+              <option value="1">⭐</option>
+              <option value="2">⭐⭐</option>
+              <option value="3">⭐⭐⭐</option>
+              <option value="4">⭐⭐⭐⭐</option>
+              <option value="5">⭐⭐⭐⭐⭐</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="resume">Résumé</label>
+          <input type="text" id="resume" name="resume">
+        </div>
+        <div class="form-row">
+          <label for="genre">Genres</label>
+          <div class="genres-checkboxes">
+            {% for genre in Genres %}
+              <label>
+                <input type="checkbox" name="genres[]" value="{{genre[0]}}">
+                {{genre[1]}}
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" id="submit_film">Envoyer</button>
+          <a href="/"><button type="button">Page d'accueil</button></a>
+        </div>
       </form>
+    </div>
+    <script defer src="{{url_for('static', filename='index.js')}}"></script>
 
-    <h1>Ajouter un film</h1>
-    <form method="POST" action="/ajout_film" id="ajout_film">
-      <label for="nom">Nom du film :</label>
-      <input type="text" id="nom" name="nom" required>
-      <br><br>
 
-      <label id="annee_sortie">Année de sortie</label>
-      <br><br>
-
-      <label for="genre">Genre :</label>
-      <br>
-      {% for genre in Genres %}
-        <label>
-          <input type="checkbox" name="genres[]" value="{{genre[0]}}">
-          {{genre[1]}}
-        </label><br>
-      {% endfor %}
-      <br><br>
-
-      <label>Resume</label>
-      <input type="text" name="resume">
- 
-      <br><br>
-      <button type="submit" id="submit_film">Envoyer</button>
-    </form>
-    <a href="/">
-      <button type="button">Page d'accueil</button>
-    </a>
-  </body>
-  <script defer src="{{url_for('static', filename='index.js')}}"></script>
-
+</html>  </body>  </body>
 </html>
