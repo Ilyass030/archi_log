@@ -2,12 +2,20 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <h2 id="error"></h2>
     <title>Ajouter un film</title>
     <script src="{{url_for('static', filename='liste_annee.js')}}"></script>
     <link href="/static/info.css" rel="stylesheet">
   </head>
   <body>
+    <h2 id="error"></h2>
+    <h2 id="succes"></h2>   
+      <form id="film_detail" method="post" action="/film_detail">
+          <div class="onefilm" onclick="document.getElementById('film_detail').submit();">
+            <li id="afficher_film"></li>
+            <input type="hidden" id="film_id" name="film_id">
+          </div>
+      </form>
+
     <h1>Ajouter un film</h1>
     <form method="POST" action="/ajout_film" id="ajout_film">
       <label for="nom">Nom du film :</label>

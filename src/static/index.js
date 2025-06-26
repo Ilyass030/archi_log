@@ -23,9 +23,6 @@ async function ajouter_film(e, form) {
     }
 
 
-
-    console.log(jsonifyForm);
-    console.log("essai");
     const response = await fetch("/ajout_film",
         { method: 'POST',
           headers: {'Accept': 'application/json, text/plain, */*',
@@ -36,6 +33,16 @@ async function ajouter_film(e, form) {
     
     const data = await response.json();
 
-    error_message = document.getElementById('error');
-    error_message.innerHTML = data['error'];
+    console.log(data);
+    film_info = document.getElementById('afficher_film');
+    film_id = document.getElementById('film_id');
+    film_id.innerHTML = data['film'][0][0];
+    film_id.value = data['film'][0][0];
+    film_info.innerHTML = "<strong>" + data['film'][0][1] + "</strong> (" + data['film'][0][3] + ')';
+
+    if (data['error'])
+    {
+        error_message = document.getElementById('error');
+        error_message.innerHTML = data['error'];
+    }
 }

@@ -37,7 +37,7 @@
             <form id="film_detail" method="post" action="/film_detail">
             {% for film in films %}
                 <div class="onefilm" onclick="document.getElementById('film_detail').submit();">
-                <li><strong>{{ film[1] }}</strong> ({{ film[3] }})<br>{{ film[2] }}</li>
+                <li><strong>{{ film[1] }}</strong> ({{ film[3] }})</li>
                 <input type="hidden" name="film_id" value="{{film[0]}}">
                 </div>
             {% endfor %}
