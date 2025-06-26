@@ -1,3 +1,11 @@
+const form_ajout_film = document.getElementById('ajout_film');
+if (form_ajout_film)
+{
+    form_ajout_film.addEventListener("submit", function(e) {
+        ajouter_film(e, this);
+    });
+}
+
 async function ajouter_film(e, form) {
     e.preventDefault();
 
@@ -17,6 +25,7 @@ async function ajouter_film(e, form) {
 
 
     console.log(jsonifyForm);
+    console.log("essai");
     const response = await fetch("/ajout_film",
         { method: 'POST',
           headers: {'Accept': 'application/json, text/plain, */*',
@@ -25,7 +34,6 @@ async function ajouter_film(e, form) {
           body: JSON.stringify(jsonifyForm)
         });
     
-    console.log("test");
     const data = await response.json();
 
     error_message = document.getElementById('error');

@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <h2 id="error"></h2>
     <title>Ajouter un film</title>
-    <script src="{{url_for('static', filename='index.js')}}"></script>
     <script src="{{url_for('static', filename='liste_annee.js')}}"></script>
     <link href="/static/info.css" rel="stylesheet">
   </head>
@@ -38,4 +37,6 @@
       <button type="button">Page d'accueil</button>
     </a>
   </body>
+  <script defer src="{{url_for('static', filename='index.js')}}"></script>
+
 </html>

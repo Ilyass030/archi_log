@@ -16,7 +16,9 @@ def general():
 
 @app.route("/ajout_film", methods=["POST"])
 def add_film():
+    print(request)
     data = request.json
+    print("test")
     return_value = {} #type : dict
 
     #error handling
@@ -27,8 +29,13 @@ def add_film():
     genres = []
     for pair in data["genres"]:
         genres.append(pair["genre"])
+
+    annee = int(data["annee_sortie"])
+    if (annee == 0):
+        annee = None
     
-    film_id = modele.add_film(data["nom"], data["resume"], int(data["annee_sortie"]), genres)
+    film_id = modele.add_film(data["nom"], data["resume"], annee, genres)
+    print("test")
     if (film_id == -1):
         return_value["error"] = "Ce film est déjà dans la base de donnée"
         return jsonify(return_value)
@@ -45,7 +52,17 @@ def ajouter_film_form():
 @app.route("/search_film", methods=["POST"])
 def search_film():
     data = request.form
-    return render_template("films.html", Genres=modele.genre(), films=modele.search_film(data.get("name", None), data.getlist("genres[]", None), data.get("annee_sortie", None)))
+
+    annee = int(data["annee_sortie"])
+    genres = []
+    for pair in data["genres"]:
+        genres.append(pair["genre"])
+    if (annee == 0):
+        annee = None
+
+
+    
+    return render_template("films.html", Genres=modele.genre(), films=modele.search_film(data.get("name", None), data.getlist("genres[]", None), annee))
 
 
 @app.route("/film_detail", methods=["POST"])

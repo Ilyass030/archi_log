@@ -144,8 +144,13 @@ def add_film(nom, resume, annee_sortie, genre_ids):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    insert = '''SELECT COUNT(id) FROM liste_films WHERE nom=? AND annee_sortie=?'''
-    val=(nom, annee_sortie)
+    insert = '''SELECT COUNT(id) FROM liste_films WHERE nom=?'''
+    val=[nom]
+
+    if annee_sortie:
+        insert += " AND annee_sortie=?"
+        val.append[annee_sortie]
+    
     exist = cursor.execute(insert, val).fetchall()[0]
     if (exist[0] != 0):
         return -1
@@ -241,8 +246,6 @@ def search_film(nom, genre_id, annee):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    
-
     query = '''
         SELECT DISTINCT f.*
         FROM liste_films f
@@ -251,9 +254,6 @@ def search_film(nom, genre_id, annee):
     '''
 
     cursor.execute(query)
-    film_id = cursor.fetchall()
-
-    print(film_id)
     params = []
 
     if nom:
@@ -274,8 +274,6 @@ def search_film(nom, genre_id, annee):
     if annee:
         query += " AND f.annee_sortie = ?"
         params.append(annee)
-
-    print(query)
 
     cursor.execute(query, params)
     result = cursor.fetchall()
