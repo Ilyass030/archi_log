@@ -2,6 +2,14 @@
     color: red;
 }
 
+#succes{
+    color: green;
+}
+
+.onefilm:hover {
+    background-color: beige;
+}
+
 body {
   background: #f7f7fa;
   font-family: 'Segoe UI', Arial, sans-serif;
