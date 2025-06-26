@@ -1,6 +1,11 @@
 #error{
     color: red;
 }
+
+#succes{
+    color: green;
+}
+
 .onefilm:hover {
     background-color: beige;
 }

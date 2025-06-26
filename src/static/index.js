@@ -45,4 +45,9 @@ async function ajouter_film(e, form) {
         error_message = document.getElementById('error');
         error_message.innerHTML = data['error'];
     }
+    else
+    {
+        success_message = document.getElementById('succes');
+        success_message.innerHTML = "Film ajouté"
+    }
 }
