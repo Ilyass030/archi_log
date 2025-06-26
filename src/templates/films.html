@@ -12,7 +12,7 @@
         <a href="/ajouter_film">
             <button type="button">Ajouter un film</button>
         </a>
-        <form method="post" action="/search_film">
+        <form method="post" action="/search_film" id="search_film">
             <label for="genre">Genre :</label>
             <br>
             {% for genre in Genres %}
@@ -29,7 +29,8 @@
             <label for="recherche">Recherche :</label>
             <input type="text" name="nom" value="{{ recherche }}" placeholder="Nom du film" />
 
-            <button type="submit">Filtrer</button>
+            <button type="submit" id="submit_search
+            ">Filtrer</button>
         </form>
 
         <ul>

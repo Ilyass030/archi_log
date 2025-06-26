@@ -33,7 +33,6 @@ async function ajouter_film(e, form) {
     
     const data = await response.json();
 
-    console.log(data);
     film_info = document.getElementById('afficher_film');
     film_id = document.getElementById('film_id');
     film_id.innerHTML = data['film'][0][0];
@@ -44,10 +43,12 @@ async function ajouter_film(e, form) {
     {
         error_message = document.getElementById('error');
         error_message.innerHTML = data['error'];
+        success_message.innerHTML = "";
     }
     else
     {
         success_message = document.getElementById('succes');
-        success_message.innerHTML = "Film ajouté"
+        success_message.innerHTML = "Film ajouté";
+        error_message.innerHTML = "";
     }
 }
