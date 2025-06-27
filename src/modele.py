@@ -75,7 +75,6 @@ def create_list():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nom TEXT NOT NULL,
         prenom TEXT,
-        nationalite TEXT,
         date_naissance TEXT,
         date_deces TEXT
     )
@@ -138,15 +137,6 @@ def get_film(film_id):
     cursor.close()
     conn.close()
     return(film)
-
-
-def get_professionnel(prof_id):
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    prof = cursor.execute('''SELECT * FROM professionnel p WHERE p.id=?''', (prof_id,)).fetchall()
-    cursor.close()
-    conn.close()
-    return(prof)
 
 
 def film_genres(film_id):
@@ -337,15 +327,41 @@ def status_utilisateur(utilisateur_id, film_id):
     return status if status else (0, 0, 0)
 ##__________________ Fonctions de gestion des équipes/professionnel... __________________##
 
+
+def get_professionnel(prof_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    prof = cursor.execute('''SELECT * FROM professionnel p WHERE p.id=?''', (prof_id,)).fetchall()
+    cursor.close()
+    conn.close()
+    return(prof)
+
+
 def add_professionnel_no_metier(nom, prenom=None, date_naissance=None, date_deces=None):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
+    get_prof_id = '''SELECT id FROM professionnel WHERE nom=?'''
+    val_id=[nom]
+
+    if prenom:
+        get_prof_id += " AND prenom=?"
+        val_id.append(prenom)
+
+    exist = cursor.execute(get_prof_id, val_id).fetchall()
+    if (len(exist) != 0):
+        return exist[0][0] * -1
+
     cursor.execute('INSERT OR IGNORE INTO professionnel (nom, prenom, date_naissance, date_deces) VALUES (?, ?, ?, ?)',
                    (nom, prenom, date_naissance, date_deces))
     conn.commit()
+
+    prof_id = cursor.execute(get_prof_id, val_id).fetchall()
+
     cursor.close()
     conn.close()
+    return prof_id
+
 
 def add_professionnel(nom, prenom=None, nationalite=None, date_naissance=None, date_deces=None):
     conn = sqlite3.connect('database.db')
@@ -356,15 +372,6 @@ def add_professionnel(nom, prenom=None, nationalite=None, date_naissance=None, d
     conn.commit()
     cursor.close()
     conn.close()
-
-# def add_metier(nom):
-#     conn = sqlite3.connect('database.db')
-#     cursor = conn.cursor()
-
-#     cursor.execute('INSERT OR IGNORE INTO metier (nom) VALUES (?)', (nom,))
-#     conn.commit()
-#     cursor.close()
-#     conn.close()
 
 def get_professionnel_id(nom, prenom=None):
     conn = sqlite3.connect('database.db')
@@ -389,14 +396,16 @@ def get_professionnel_id(nom, prenom=None):
 #     conn.close()
 #     return metier_id
 
-def metier():
+def get_films_professionnel(prof_id):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    cursor.execute('''select * from metier''')
-    genre = cursor.fetchall()
+    cursor.execute('''SELECT DISTINCT * FROM liste_films f 
+                    JOIN professionnel_metier_film m ON m.film_id=f.id
+                    WHERE ?=m.professionnel_id''', (prof_id,))
+    films = cursor.fetchall()
     cursor.close()
-    conn.close()
-    return(genre)
+    return(films)
+
 
 def add_professionnel_metier_film(professionnel_id, metier_id, film_id):
     conn = sqlite3.connect('database.db')
@@ -405,6 +414,23 @@ def add_professionnel_metier_film(professionnel_id, metier_id, film_id):
         INSERT OR IGNORE INTO professionnel_metier_film (professionnel_id, metier_id, film_id)
         VALUES (?, ?, ?)
     ''', (professionnel_id, metier_id, film_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def delete_professionnel(professionnel_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        DELETE FROM professionnel_metier_film
+        WHERE professionnel_id=?
+    ''', (professionnel_id,))
+
+    cursor.execute('''
+        DELETE FROM professionnel
+        WHERE id=?
+    ''', (professionnel_id,))
     conn.commit()
     cursor.close()
     conn.close()
@@ -436,85 +462,3 @@ def get_professionnels_film(film_id):
     return pros
 
 #def add_professionnel_metier(professionnel_id, metier_id):#jsp s'il l en faut une
-
-
-    
-
-# def list():
-#     mydb = mysql.connector.connect(
-#         host="localhost",
-#         user="root",
-#         password="leane0208",
-#         database="archi_logicielle"
-#     )
-#     mycursor = mydb.cursor()
-
-#     mycursor.execute('''select j.nom, p.nom, prix, t.nom, description from liste_jeux j, liste_genres p, liste_type t where j.plateforme_id=p.id and j.type_id=t.id''')
-#     etuds = mycursor.fetchall()
-#     print(etuds)
-#     mycursor.close()
-#     return(etuds)
-
-# def type():
-#     mydb = mysql.connector.connect(
-#         host="localhost",
-#         user="root",
-#         password="leane0208",
-#         database="archi_logicielle"
-#     )
-#     mycursor = mydb.cursor()
-
-#     mycursor.execute('''select * from liste_type''')
-#     etuds = mycursor.fetchall()
-#     print(etuds)
-#     mycursor.close()
-#     return(etuds)
-
-
-
-# def add_type(type):
-#     mydb = mysql.connector.connect(
-#         host="localhost",
-#         user="root",
-#         password="leane0208",
-#         database="archi_logicielle"
-#     )
-
-#     mycursor = mydb.cursor()
-#     insert = 'insert into liste_type(nom) values("' + type + '")'
-#     mycursor.execute(insert)
-#     mydb.commit()
-
-#     mycursor.close() 
-
-# def add_plateforme(plateforme):
-#     mydb = mysql.connector.connect(
-#         host="localhost",
-#         user="root",
-#         password="leane0208",
-#         database="archi_logicielle"
-#     )
-
-#     mycursor = mydb.cursor()
-#     insert = 'insert into liste_genres(nom) values("' + plateforme + '")'
-#     mycursor.execute(insert)
-#     mydb.commit()
-
-#     mycursor.close()
-
-# def add_jeux(nom, plateforme, prix, type, description):
-#     mydb = mysql.connector.connect(
-#         host="localhost",
-#         user="root",
-#         password="leane0208",
-#         database="archi_logicielle"
-#     )
-
-#     mycursor = mydb.cursor()
-#     insert='''insert into liste_jeux(nom, plateforme_id, prix, type_id, description) values(%s, %s, %s, %s, %s)'''
-#     val = (nom, plateforme, prix, type, description)
-#     mycursor.execute(insert, val)
-#     mydb.commit()
-
-#     mycursor.close()
-#     return(list())
