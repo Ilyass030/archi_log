@@ -192,8 +192,8 @@ def connexion():
 
 @app.route("/deconnexion")
 def deconnexion():
-   
-    return render_template("films.html", Genres=modele.genre())
+    session.clear()  # Vide toute la session
+    return redirect(url_for("general"))
 
 # @app.route("/update_film", methods=["POST"])
 # def update_film():
