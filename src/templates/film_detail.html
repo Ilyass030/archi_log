@@ -26,7 +26,7 @@
             <form id="professionnel_detail" method="post" action="/professionnel_detail">
             <div class="pro-infos" onclick="document.getElementById('professionnel_detail').submit();">
               <input type="hidden" id="prof_id" name="prof_id" value="{{pro[0]}}">
-              <strong>{{pro[1]}} {{pro[2]}}</strong>
+              <strong>{{pro[2]}} {{pro[1]}}</strong>
                 {% if pro[4] %}<span class="pro-meta">, né(e) le {{pro[4]}}</span>{% endif %}
                 {% if pro[5] %}<span class="pro-meta">, décédé(e) le {{pro[5]}}</span>{% endif %}
                 <span class="pro-meta">— {{pro[3]}}</span>
