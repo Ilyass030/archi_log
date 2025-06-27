@@ -75,7 +75,6 @@ def create_list():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nom TEXT NOT NULL,
         prenom TEXT,
-        nationalite TEXT,
         date_naissance TEXT,
         date_deces TEXT
     )
@@ -347,12 +346,12 @@ def add_professionnel_no_metier(nom, prenom=None, date_naissance=None, date_dece
     cursor.close()
     conn.close()
 
-def add_professionnel(nom, prenom=None, nationalite=None, date_naissance=None, date_deces=None):
+def add_professionnel(nom, prenom=None, date_naissance=None, date_deces=None):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    cursor.execute('INSERT OR IGNORE INTO professionnel (nom, prenom, nationalite, date_naissance, date_deces) VALUES (?, ?, ?, ?, ?)',
-                   (nom, prenom, nationalite, date_naissance, date_deces))
+    cursor.execute('INSERT OR IGNORE INTO professionnel (nom, prenom, date_naissance, date_deces) VALUES (?, ?, ?, ?)',
+                   (nom, prenom, date_naissance, date_deces))
     conn.commit()
     cursor.close()
     conn.close()
@@ -434,8 +433,6 @@ def get_professionnels_film(film_id):
     cursor.close()
     conn.close()
     return pros
-
-#def add_professionnel_metier(professionnel_id, metier_id):#jsp s'il l en faut une
 
 
     
