@@ -363,12 +363,12 @@ def add_professionnel_no_metier(nom, prenom=None, date_naissance=None, date_dece
     return prof_id
 
 
-def add_professionnel(nom, prenom=None, nationalite=None, date_naissance=None, date_deces=None):
+def add_professionnel(nom, prenom=None, date_naissance=None, date_deces=None):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    cursor.execute('INSERT OR IGNORE INTO professionnel (nom, prenom, nationalite, date_naissance, date_deces) VALUES (?, ?, ?, ?, ?)',
-                   (nom, prenom, nationalite, date_naissance, date_deces))
+    cursor.execute('INSERT OR IGNORE INTO professionnel (nom, prenom, date_naissance, date_deces) VALUES (?, ?, ?, ?)',
+                   (nom, prenom, date_naissance, date_deces))
     conn.commit()
     cursor.close()
     conn.close()

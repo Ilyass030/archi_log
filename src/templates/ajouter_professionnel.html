@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link href="/static/film_detail.css" rel="stylesheet">
+    <link href="/static/info.css" rel="stylesheet">
+    <title>Ajouter un professionnel du cinéma</title>
+  </head>
+  <body>
+    <h2 id="error"></h2>
+    <h2 id="succes"></h2>
+    <form style="visibility: hidden;" id="prof_detail" method="post" action="/professionnel_detail">
+      <div class="oneprof" onclick="document.getElementById('prof_detail').submit();">
+        <p id="afficher_prof"></p>
+        <input type="hidden" id="prof_id" name="prof_id">
+      </div>
+    </form>
+    <div class="detail-container">
+      <div id="add-pro-form" style="margin-top:16px;">
+        <form id="form-add-pro" method="post" action="/add_professionnel">
+          <label>Nom : <input type="text" name="nom" required></label>
+          <label>Prénom : <input type="text" name="prenom"></label>
+          <label>Date de naissance : <input type="date" name="date_naissance"></label>
+          <label>Date de décès : <input type="date" name="date_deces"></label>
+          <button type="submit">Enregistrer</button>
+        </form>
+      </div>
+      <button onclick="location.href='/'" class="btn-grey">Page d'accueil</button>
+    </div>
+    <script src="/static/ajout_professionnel.js"></script>
+  </body>
+</html>
