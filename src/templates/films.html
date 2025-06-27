@@ -2,22 +2,25 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Liste des Films</title>
+    <title>Lesserboxd</title>
     <link href="/static/info.css" rel="stylesheet">
     <script src="{{url_for('static', filename='liste_annee.js')}}"></script>
     <script defer src="{{url_for('static', filename='films.js')}}"></script>
-    
   </head>
   <body>
     <main class="container">
-      <h1>Liste des Films</h1>
-      <div class="actions">
-        <a href="/ajouter_film">
-          <button type="button" class="btn-large">Ajouter un film</button>
-        </a>
-        <a href="/ajouter_professionnel">
-          <button type="button" class="btn-large">Ajouter un professionnel du cinéma</button>
-        </a>
+      <h1 class="lesserboxd-title">LESSERBOXD</h1>
+      <div class="header-user-btns">
+        {% if nom_utilisateur %}
+          <span class="bonjour-user">Bonjour {{ nom_utilisateur }} !</span>
+          <a href="/deconnexion"><button type="button" class="btn-large btn-grey" id="btn-deco">Déconnexion</button></a>
+        {% else %}
+          <a href="/connexion"><button type="button" class="btn-large btn-blue" id="btn-co">Connectez-vous !</button></a>
+          <button type="button" class="btn-large btn-grey" id="btn-deco" disabled>Déconnexion</button>
+        {% endif %}
+        <a href="/ajouter_utilisateur"><button type="button" class="btn-large btn-grey">Inscription</button></a>
+        <a href="/ajouter_film"><button type="button" class="btn-large btn-blue">Ajouter un film</button></a>
+        <a href="/ajouter_professionnel"><button type="button" class="btn-large btn-grey">Ajouter un professionnel</button></a>
       </div>
       <div class="flex-films-page">
         <!-- Colonne gauche : recherche -->
@@ -48,7 +51,6 @@
         <!-- Colonne droite : liste des films -->
         <section class="films-panel films-list">
           <ul id="film_detail" class="films-ul">
-         
           </ul>
         </section>
       </div>

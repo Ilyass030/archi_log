@@ -46,6 +46,10 @@ def create_list():
     CREATE TABLE IF NOT EXISTS utilisateur (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nom TEXT NOT NULL,
+        prenom TEXT,
+        identifiant TEXT UNIQUE,
+        mot_de_passe TEXT,
+        email TEXT,
         nb_visionnage INTEGER DEFAULT 0,
         nb_notes INTEGER DEFAULT 0,
         nb_likes INTEGER DEFAULT 0
@@ -457,3 +461,85 @@ def get_professionnels_film(film_id):
     return pros
 
 #def add_professionnel_metier(professionnel_id, metier_id):#jsp s'il l en faut une
+
+
+    
+
+# def list():
+#     mydb = mysql.connector.connect(
+#         host="localhost",
+#         user="root",
+#         password="leane0208",
+#         database="archi_logicielle"
+#     )
+#     mycursor = mydb.cursor()
+
+#     mycursor.execute('''select j.nom, p.nom, prix, t.nom, description from liste_jeux j, liste_genres p, liste_type t where j.plateforme_id=p.id and j.type_id=t.id''')
+#     etuds = mycursor.fetchall()
+#     print(etuds)
+#     mycursor.close()
+#     return(etuds)
+
+# def type():
+#     mydb = mysql.connector.connect(
+#         host="localhost",
+#         user="root",
+#         password="leane0208",
+#         database="archi_logicielle"
+#     )
+#     mycursor = mydb.cursor()
+
+#     mycursor.execute('''select * from liste_type''')
+#     etuds = mycursor.fetchall()
+#     print(etuds)
+#     mycursor.close()
+#     return(etuds)
+
+
+
+# def add_type(type):
+#     mydb = mysql.connector.connect(
+#         host="localhost",
+#         user="root",
+#         password="leane0208",
+#         database="archi_logicielle"
+#     )
+
+#     mycursor = mydb.cursor()
+#     insert = 'insert into liste_type(nom) values("' + type + '")'
+#     mycursor.execute(insert)
+#     mydb.commit()
+
+#     mycursor.close() 
+
+# def add_plateforme(plateforme):
+#     mydb = mysql.connector.connect(
+#         host="localhost",
+#         user="root",
+#         password="leane0208",
+#         database="archi_logicielle"
+#     )
+
+#     mycursor = mydb.cursor()
+#     insert = 'insert into liste_genres(nom) values("' + plateforme + '")'
+#     mycursor.execute(insert)
+#     mydb.commit()
+
+#     mycursor.close()
+
+# def add_jeux(nom, plateforme, prix, type, description):
+#     mydb = mysql.connector.connect(
+#         host="localhost",
+#         user="root",
+#         password="leane0208",
+#         database="archi_logicielle"
+#     )
+
+#     mycursor = mydb.cursor()
+#     insert='''insert into liste_jeux(nom, plateforme_id, prix, type_id, description) values(%s, %s, %s, %s, %s)'''
+#     val = (nom, plateforme, prix, type, description)
+#     mycursor.execute(insert, val)
+#     mydb.commit()
+
+#     mycursor.close()
+#     return(list())

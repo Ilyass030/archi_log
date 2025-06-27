@@ -1,4 +1,4 @@
-from flask import Flask,request,render_template,jsonify,abort
+from flask import Flask, request, render_template, jsonify, abort, session, redirect, url_for
 from flask_cors import CORS
 from enum import Enum
 from datetime import datetime
@@ -6,12 +6,14 @@ from datetime import datetime
 import modele
 
 app = Flask(__name__)
+app.secret_key = "votre_cle_secrete"  # Ajoute une clé secrète pour la session
 CORS(app)
 
 @app.route("/")
 def general():
     modele.create_list()
-    return render_template("films.html", Genres=modele.genre())
+    nom_utilisateur = session.get("utilisateur")
+    return render_template("films.html", Genres=modele.genre(), nom_utilisateur=nom_utilisateur)
 
 
 @app.route("/ajout_film", methods=["POST"])
@@ -162,6 +164,42 @@ def delete_professionnel_route():
     metier_id = modele.get_metier(metier)
     modele.delete_professionnel_metier_film(professionnel_id, metier_id, film_id)
     return jsonify({"success": True})
+
+@app.route("/ajouter_utilisateur", methods=["GET"])
+def ajouter_utilisateur_form():
+    return render_template("add.utilisateur.html")
+
+@app.route("/ajout_utilisateur", methods=["POST"])
+def ajout_utilisateur():
+    identifiant = request.form["identifiant"]
+    mot_de_passe = request.form["mot_de_passe"]
+    # Utilise identifiant comme nom si tu ne veux que pseudo/mot de passe
+    nom = identifiant
+    prenom = None
+    email = None
+    modele.add_utilisateur_complet(identifiant, mot_de_passe, nom, prenom, email)
+    return render_template("films.html", Genres=modele.genre())
+
+@app.route("/connexion", methods=["GET"])
+def connexion_form():
+    return render_template("connexion.html")
+
+@app.route("/connexion", methods=["POST"])
+def connexion():
+    identifiant = request.form["identifiant"]
+    mot_de_passe = request.form["mot_de_passe"]
+    utilisateur = modele.check_connexion(identifiant, mot_de_passe)
+    if utilisateur:
+        session["utilisateur"] = utilisateur[1]  # nom
+        session["identifiant"] = utilisateur[3]  # identifiant
+        return redirect(url_for("general"))
+    else:
+        return render_template("connexion.html", error="Identifiant ou mot de passe incorrect")
+
+@app.route("/deconnexion")
+def deconnexion():
+   
+    return render_template("films.html", Genres=modele.genre())
 
 # @app.route("/update_film", methods=["POST"])
 # def update_film():
