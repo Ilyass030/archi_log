@@ -46,6 +46,10 @@ def create_list():
     CREATE TABLE IF NOT EXISTS utilisateur (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nom TEXT NOT NULL,
+        prenom TEXT,
+        identifiant TEXT UNIQUE,
+        mot_de_passe TEXT,
+        email TEXT,
         nb_visionnage INTEGER DEFAULT 0,
         nb_notes INTEGER DEFAULT 0,
         nb_likes INTEGER DEFAULT 0
@@ -518,3 +522,23 @@ def get_professionnels_film(film_id):
 
 #     mycursor.close()
 #     return(list())
+
+def add_utilisateur_complet(identifiant, mot_de_passe, nom, prenom=None, email=None):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO utilisateur (nom, prenom, identifiant, mot_de_passe, email)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (nom, prenom, identifiant, mot_de_passe, email))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def check_connexion(identifiant, mot_de_passe):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM utilisateur WHERE identifiant=? AND mot_de_passe=?', (identifiant, mot_de_passe))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return user

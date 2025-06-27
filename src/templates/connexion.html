@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Connexion</title>
+    <link href="/static/info.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="add-film-container vertical">
+      <h1>Connexion</h1>
+      <form method="POST" action="/connexion" id="form_connexion">
+        <div class="form-row">
+          <label for="identifiant">Pseudo</label>
+          <input type="text" id="identifiant" name="identifiant" required>
+        </div>
+        <div class="form-row">
+          <label for="mot_de_passe">Mot de passe</label>
+          <input type="password" id="mot_de_passe" name="mot_de_passe" required>
+        </div>
+        <button type="submit" class="btn-large">Se connecter</button>
+        <a href="/"><button type="button" class="btn-grey">Retour à l'accueil</button></a>
+      </form>
+    </div>
+  </body>
+</html>
