@@ -22,7 +22,7 @@
       <h2>Équipe du film</h2>
       <ul id="pro-list">
         {% for pro in Crew %}
-          <li class="pro-item" data-pro-id="{{pro[0]}}" data-metier="{{pro[3]}}">
+          <li class="pro-item" data-pro-id="{{pro[0]}}" data-metier="{{pro[6]}}">
             <div class="pro-infos">
               <strong>{{pro[1]}} {{pro[2]}}</strong>
               {% if pro[4] %}<span class="pro-meta">({{pro[4]}})</span>{% endif %}
@@ -41,7 +41,7 @@
           <label for="metier">Professionnel :</label>
           <div class="prof-select">
             <select name="prof_id" required>
-              {% for prof in Profesionnel %}
+              {% for prof in Professionnel %}
                 <option value="{{prof[0]}}">{{prof[2]}} <strong>{{prof[1]}}</strong></option>
               {% endfor %}
             </select>

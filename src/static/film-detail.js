@@ -56,13 +56,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target.classList.contains('delete-pro')) {
       const li = e.target.closest('li');
       const professionnel_id = li.getAttribute('data-pro-id');
-      const metier = li.getAttribute('data-metier');
+      const metier_id = li.getAttribute('data-metier');
       const film_id = document.querySelector('input[name="film_id"]').value;
       if (confirm("Supprimer ce professionnel de ce film ?")) {
         const formData = new FormData();
         formData.append("film_id", film_id);
         formData.append("professionnel_id", professionnel_id);
-        formData.append("metier", metier);
+        formData.append("metier_id", metier_id);
         const response = await fetch('/delete_professionnel', {
           method: 'POST',
           body: formData

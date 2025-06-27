@@ -333,6 +333,7 @@ def all_professionnel():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     all = cursor.execute('SELECT id, nom, prenom FROM professionnel').fetchall()
+    print (all)
     cursor.close()
     conn.close()
     return all
@@ -449,7 +450,7 @@ def get_professionnels_film(film_id):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT p.id, p.nom, p.prenom, m.nom, p.date_naissance, p.date_deces
+        SELECT p.id, p.nom, p.prenom, m.nom, p.date_naissance, p.date_deces, m.id
         FROM professionnel p
         JOIN professionnel_metier_film pmf ON p.id = pmf.professionnel_id
         JOIN metier m ON pmf.metier_id = m.id
