@@ -32,13 +32,12 @@ async function ajouter_film(e, form) {
     
     const data = await response.json();
 
-    const film_info = document.getElementById('afficher_film');
-    const film_id = document.getElementById('film_id');
-    if (film_info && film_id && data['film']) {
-        film_id.innerHTML = data['film'][0][0];
-        film_id.value = data['film'][0][0];
-        film_info.innerHTML = "<strong>" + data['film'][0][1] + "</strong> (" + data['film'][0][3] + ')';
-    }
+    film_info = document.getElementById('afficher_film');
+    film_id = document.getElementById('film_id');
+    film_id.innerHTML = data['film'][0][0];
+    film_id.value = data['film'][0][0];
+    film_info.innerHTML = "<strong>" + data['film'][0][1] + "</strong> (" + data['film'][0][3] + ')';
+    document.getElementById("film_detail").style.visibility = "visible";
 
     if (data['error']) {
         const error_message = document.getElementById('error');
@@ -46,6 +45,9 @@ async function ajouter_film(e, form) {
         error_message.innerHTML = data['error'];
         success_message.innerHTML = "";
     } else {
-        window.location.href = "/";
+        const error_message = document.getElementById('error');
+        const success_message = document.getElementById('succes');
+        success_message.innerHTML = "Film ajouté";
+        error_message.innerHTML = "";
     }
 }

@@ -48,9 +48,20 @@ def ajouter_film_form():
     return render_template("index.html", error="", Genres=modele.genre())
 
 
+@app.route("/modify_film", methods=["POST"])
+def modifier_film_form():
+    film_id = request.form["film_id"]
+    return render_template("modify_film.html", Film=modele.get_film(film_id), Genres=modele.genre(), filmGenres=modele.film_genres(film_id))
+
+
+@app.route("/modifier_film", methods=["POST"])
+def modifier_film():
+    data=request.form
+    modele.modify_film(data["film_id"], data.get("resume", None), int(data["annee_sortie"]), data.getlist("genres[]", None))
+    return render_template("film_detail.html", Film=modele.get_film(data["film_id"]), Genres=modele.film_genres(data["film_id"]))
+
 @app.route("/search_film", methods=["POST"])
 def search_film():
-    print(request.content_encoding)
     data = request.json
 
     annee = int(data["annee_sortie"])
@@ -76,11 +87,12 @@ def film_detail():
         "film_detail.html",
         Film=modele.get_film(film_id),
         Genres=modele.film_genres(film_id),
-        Professionnels=modele.get_professionnels_film(film_id),  # <-- AJOUTE CET ARGUMENT
+        Crew=modele.get_professionnels_film(film_id),
+        Professionnel=modele.all_professionnel(),
         Metiers=modele.metier()
     )
 
-@app.route("/ajouter_professionnel", methods=["POST"])
+@app.route("/ajouter_professionnel", methods=["GET"])
 def ajouter_professionnel():
     return render_template(
         "ajouter_professionnel.html",
@@ -93,7 +105,7 @@ def professionnel_detail():
     return render_template(
         "professionnel_detail.html",
         Prof=modele.get_professionnel(prof_id),
-        Professionnels=modele.get_films_professionnel(prof_id)  # <-- AJOUTE CET ARGUMENT
+        Films=modele.get_films_professionnel(prof_id)  # <-- AJOUTE CET ARGUMENT
     )
 
 @app.route("/delete_film", methods=["POST"])
@@ -107,38 +119,28 @@ def delete_film_route():
 @app.route("/add_professionnel", methods=["POST"])
 def add_professionnel():
     nom = request.form["nom"]
+    return_value = {}
     prenom = request.form.get("prenom")
     date_naissance = request.form.get("date_naissance")
     date_deces = request.form.get("date_deces")
-    metier = request.form["metier"]
 
     # Ajoute le professionnel (fonction existante)
-    modele.add_professionnel_no_metier(nom, prenom, date_naissance, date_deces)
-    return jsonify({
-        "success": True,
-        "pro": {
-            "nom": nom,
-            "prenom": prenom,
-            "date_naissance": date_naissance,
-            "date_deces": date_deces,
-        }
-    })
+    prof_id = modele.add_professionnel_no_metier(nom, prenom, date_naissance, date_deces)
+    if (prof_id < 0):
+        prof_id *= -1
+        return_value["error"] = "Ce professionnel est déjà dans la base de donnée"
+    return_value["prof"] = modele.get_professionnel(prof_id)
+    return jsonify(return_value)
+
 
 @app.route("/add_crew", methods=["POST"])
 def add_professionnel_route():
     film_id = request.form["film_id"]
-    nom = request.form["nom"]
-    prenom = request.form.get("prenom")
-    nationalite = request.form.get("nationalite")
-    date_naissance = request.form.get("date_naissance")
-    date_deces = request.form.get("date_deces")
-    metier = request.form["metier"]
+    prof_id = request.form["prof_id"]
+    metier_id = request.form["metier_id"]
 
     # Ajoute le professionnel (fonction existante)
-    modele.add_professionnel(nom, prenom, nationalite, date_naissance, date_deces)
-    professionnel_id = modele.get_professionnel_id(nom, prenom)
-    metier_id = modele.get_metier(metier)
-    modele.add_professionnel_metier_film(professionnel_id, metier_id, film_id)
+    modele.add_professionnel_metier_film(prof_id, metier_id, film_id)
 
     return jsonify({
         "success": True,

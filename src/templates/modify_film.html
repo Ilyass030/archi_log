@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{Film[0][1]}}</title>
+    <script src="{{url_for('static', filename='modify_film.js')}}"></script>
+    <link href="/static/info.css" rel="stylesheet">
+  </head>
+  <body>
+    <h2 id="succes"></h2>
+    <div class="add-film-container vertical">
+      <h1>{{Film[0][1]}}</h1>
+      <form method="POST" action="/modifier_film" id="ajout_film">
+        <input type="hidden" name="film_id" value="{{Film[0][0]}}">
+        <div class="row-fields">
+          <div class="form-row">
+            <label id="annee_sortie">Année</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="resume">Résumé</label>
+          <input type="text" id="resume" name="resume" placeholder="{{Film[0][2]}}">
+        </div>
+        <div class="form-row">
+          <label for="genre">Genres</label>
+          <div class="genres-checkboxes">
+            {% for genre in Genres %}
+              <label>
+                <input type="checkbox" id="{{genre[0]}}" name="genres[]" value="{{genre[0]}}">
+                {{genre[1]}}
+              </label>
+            {% endfor %}
+
+            {% for genre in filmGenres %}
+              <script>document.getElementById("{{genre[0]}}").setAttribute("checked", "");</script>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" id="submit_film">Modifier</button>
+          <a href="/"><button type="button">Page d'accueil</button></a>
+        </div>
+      </form>
+    </div>
+
+  </body>
+  <script defer>document.getElementById("{{Film[0][3]}}").setAttribute("selected", "");</script>
+
+</html>

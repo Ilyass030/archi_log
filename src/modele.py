@@ -208,27 +208,25 @@ def delete_film(id_film):
     conn.close()
     return 1
 
-def modify_film(film_id, nom=None, resume=None, annee_sortie=None, genre_ids=None):
+def modify_film(film_id, resume=None, annee_sortie=None, genre_ids=None):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-
-    updates = []
+    
+    query = "UPDATE liste_films SET annee_sortie=?"
     params = []
-    if nom is not None:
-        updates.append("nom=?")
-        params.append(nom)
+
+    if annee_sortie == 0:
+        annee_sortie = None
+    params.append(annee_sortie)
+    
     if resume is not None:
-        updates.append("resume=?")
+        query += ", resume=?"
         params.append(resume)
-    if annee_sortie is not None:
-        updates.append("annee_sortie=?")
-        params.append(annee_sortie)
 
-    if updates:
-        query = f"UPDATE liste_films SET {', '.join(updates)} WHERE id=?"
+    if params:
         params.append(film_id)
+        query += "WHERE id=?"
         cursor.execute(query, params)
-
 
     if genre_ids is not None:
         cursor.execute('DELETE FROM film_genre WHERE film_id=?', (film_id,))
@@ -327,6 +325,14 @@ def status_utilisateur(utilisateur_id, film_id):
     return status if status else (0, 0, 0)
 ##__________________ Fonctions de gestion des équipes/professionnel... __________________##
 
+def all_professionnel():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    all = cursor.execute('SELECT id, nom, prenom FROM professionnel').fetchall()
+    cursor.close()
+    conn.close()
+    return all
+
 
 def get_professionnel(prof_id):
     conn = sqlite3.connect('database.db')
@@ -385,17 +391,6 @@ def get_professionnel_id(nom, prenom=None):
     conn.close()
     return row[0] if row else None
 
-# def get_metier(nom):
-#     conn = sqlite3.connect('database.db')
-#     cursor = conn.cursor()
-#     # cursor.execute('INSERT OR IGNORE INTO metier (nom) VALUES (?)', (nom,))
-#     # conn.commit()
-#     cursor.execute('SELECT id FROM metier WHERE nom=?', (nom,))
-#     metier_id = cursor.fetchone()[0]
-#     cursor.close()
-#     conn.close()
-#     return metier_id
-
 def get_films_professionnel(prof_id):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -450,7 +445,7 @@ def get_professionnels_film(film_id):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT p.id, p.nom, p.prenom, m.nom, p.nationalite, p.date_naissance, p.date_deces
+        SELECT p.id, p.nom, p.prenom, m.nom, p.date_naissance, p.date_deces
         FROM professionnel p
         JOIN professionnel_metier_film pmf ON p.id = pmf.professionnel_id
         JOIN metier m ON pmf.metier_id = m.id

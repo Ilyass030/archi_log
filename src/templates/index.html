@@ -9,6 +9,12 @@
   <body>
     <h2 id="error"></h2>
     <h2 id="succes"></h2>
+    <form style="visibility: hidden;" id="film_detail" method="post" action="/film_detail">
+      <div class="onefilm" onclick="document.getElementById('film_detail').submit();">
+        <p id="afficher_film"></p>
+        <input type="hidden" id="film_id" name="film_id">
+      </div>
+    </form>
     <div class="add-film-container vertical">
       <h1>Ajouter un film !</h1>
       <form method="POST" action="/ajout_film" id="ajout_film">

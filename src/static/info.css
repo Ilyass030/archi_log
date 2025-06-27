@@ -10,6 +10,10 @@
     background-color: beige;
 }
 
+.oneprof:hover {
+  background-color: lightblue;
+}
+
 body {
   background: #f7f7fa;
   font-family: 'Segoe UI', Arial, sans-serif;

@@ -21,7 +21,7 @@
 
       <h2>Équipe du film</h2>
       <ul id="pro-list">
-        {% for pro in Professionnels %}
+        {% for pro in Crew %}
           <li class="pro-item" data-pro-id="{{pro[0]}}" data-metier="{{pro[3]}}">
             <div class="pro-infos">
               <strong>{{pro[1]}} {{pro[2]}}</strong>
@@ -38,17 +38,17 @@
       <div id="add-pro-form" style="display:none; margin-top:16px;">
         <form id="form-add-pro" method="post" action="/add_crew">
           <input type="hidden" name="film_id" value="{{Film[0][0]}}">
-          <label>Nom : <input type="text" name="nom" required></label>
-          <label>Prénom : <input type="text" name="prenom"></label>
-          <!-- <label>Nationalité : <input type="text" name="nationalite"></label> -->
-          <label>Date de naissance : <input type="date" name="date_naissance"></label>
-          <label>Date de décès : <input type="date" name="date_deces"></label>
-          <!-- <label>Métier :
-            <input type="text" name="metier" required placeholder="ex: Réalisateur">
-          </label> -->
+          <label for="metier">Professionnel :</label>
+          <div class="prof-select">
+            <select name="prof_id" required>
+              {% for prof in Profesionnel %}
+                <option value="{{prof[0]}}">{{prof[2]}} <strong>{{prof[1]}}</strong></option>
+              {% endfor %}
+            </select>
+          </div>
           <label for="metier">Métier :</label>
           <div class="metier-select">
-            <select name="metier" required>
+            <select name="metier_id" required>
               {% for metier in Metiers %}
                 <option value="{{metier[0]}}">{{metier[1]}}</option>
               {% endfor %}
@@ -61,6 +61,10 @@
       <form method="POST" action="/delete_film">
         <input type="hidden" name="film_id" value="{{Film[0][0]}}">
         <input type="submit" value="Supprimer le film" class="btn-red" onclick="return confirm('Voulez-vous vraiment supprimer ce film ?');">
+      </form>
+      <form method="POST" action="/modify_film">
+        <input type="hidden" name="film_id" value="{{Film[0][0]}}">
+        <input type="submit" value="Modifier les informations du film">
       </form>
     </div>
     <script src="/static/film-detail.js"></script>
