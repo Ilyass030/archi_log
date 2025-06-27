@@ -83,9 +83,16 @@ def create_list():
     
     cursor.execute('''CREATE TABLE IF NOT EXISTS metier (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nom TEXT NOT NULL
+        nom TEXT UNIQUE NOT NULL
     )
 ''')
+    
+    metiers = [
+        "Acteur", "Réalisateur", "Scénariste", "Producteur", "Monteur","Directeur de la photographie",
+        "Compositeur", "Chef décorateur", "Costumier", "Ingénieur du son"
+    ]
+    for metier in metiers:
+        cursor.execute("INSERT OR IGNORE INTO metier (nom) VALUES (?)", (metier,))
     
     cursor.execute('''CREATE TABLE IF NOT EXISTS professionnel_metier_film (
         professionnel_id INTEGER,
@@ -318,7 +325,16 @@ def add_ami(utilisateur_id, ami_id):
     conn.commit()
     cursor.close()
     conn.close()
+    
+def status_utilisateur(utilisateur_id, film_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
 
+    cursor.execute('SELECT visionnage, like, note FROM utilisateur_film WHERE utilisateur_id=? AND film_id=?', (utilisateur_id, film_id))
+    status = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return status if status else (0, 0, 0)
 ##__________________ Fonctions de gestion des équipes/professionnel... __________________##
 
 def add_professionnel_no_metier(nom, prenom=None, date_naissance=None, date_deces=None):
@@ -341,14 +357,14 @@ def add_professionnel(nom, prenom=None, nationalite=None, date_naissance=None, d
     cursor.close()
     conn.close()
 
-def add_metier(nom):
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
+# def add_metier(nom):
+#     conn = sqlite3.connect('database.db')
+#     cursor = conn.cursor()
 
-    cursor.execute('INSERT OR IGNORE INTO metier (nom) VALUES (?)', (nom,))
-    conn.commit()
-    cursor.close()
-    conn.close()
+#     cursor.execute('INSERT OR IGNORE INTO metier (nom) VALUES (?)', (nom,))
+#     conn.commit()
+#     cursor.close()
+#     conn.close()
 
 def get_professionnel_id(nom, prenom=None):
     conn = sqlite3.connect('database.db')
@@ -362,16 +378,25 @@ def get_professionnel_id(nom, prenom=None):
     conn.close()
     return row[0] if row else None
 
-def get_or_create_metier(nom):
+# def get_metier(nom):
+#     conn = sqlite3.connect('database.db')
+#     cursor = conn.cursor()
+#     # cursor.execute('INSERT OR IGNORE INTO metier (nom) VALUES (?)', (nom,))
+#     # conn.commit()
+#     cursor.execute('SELECT id FROM metier WHERE nom=?', (nom,))
+#     metier_id = cursor.fetchone()[0]
+#     cursor.close()
+#     conn.close()
+#     return metier_id
+
+def metier():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    cursor.execute('INSERT OR IGNORE INTO metier (nom) VALUES (?)', (nom,))
-    conn.commit()
-    cursor.execute('SELECT id FROM metier WHERE nom=?', (nom,))
-    metier_id = cursor.fetchone()[0]
+    cursor.execute('''select * from metier''')
+    genre = cursor.fetchall()
     cursor.close()
     conn.close()
-    return metier_id
+    return(genre)
 
 def add_professionnel_metier_film(professionnel_id, metier_id, film_id):
     conn = sqlite3.connect('database.db')

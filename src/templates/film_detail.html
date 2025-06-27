@@ -40,12 +40,20 @@
           <input type="hidden" name="film_id" value="{{Film[0][0]}}">
           <label>Nom : <input type="text" name="nom" required></label>
           <label>Prénom : <input type="text" name="prenom"></label>
-          <label>Nationalité : <input type="text" name="nationalite"></label>
+          <!-- <label>Nationalité : <input type="text" name="nationalite"></label> -->
           <label>Date de naissance : <input type="date" name="date_naissance"></label>
           <label>Date de décès : <input type="date" name="date_deces"></label>
-          <label>Métier :
+          <!-- <label>Métier :
             <input type="text" name="metier" required placeholder="ex: Réalisateur">
-          </label>
+          </label> -->
+          <label for="metier">Métier :</label>
+          <div class="metier-select">
+            <select name="metier" required>
+              {% for metier in Metiers %}
+                <option value="{{metier[0]}}">{{metier[1]}}</option>
+              {% endfor %}
+            </select>
+          </div>
           <button type="submit">Enregistrer</button>
         </form>
       </div>

@@ -76,7 +76,8 @@ def film_detail():
         "film_detail.html",
         Film=modele.get_film(film_id),
         Genres=modele.film_genres(film_id),
-        Professionnels=modele.get_professionnels_film(film_id)  # <-- AJOUTE CET ARGUMENT
+        Professionnels=modele.get_professionnels_film(film_id),  # <-- AJOUTE CET ARGUMENT
+        Metiers=modele.metier()
     )
 
 @app.route("/ajouter_professionnel", methods=["POST"])
@@ -136,7 +137,7 @@ def add_professionnel_route():
     # Ajoute le professionnel (fonction existante)
     modele.add_professionnel(nom, prenom, nationalite, date_naissance, date_deces)
     professionnel_id = modele.get_professionnel_id(nom, prenom)
-    metier_id = modele.get_or_create_metier(metier)
+    metier_id = modele.get_metier(metier)
     modele.add_professionnel_metier_film(professionnel_id, metier_id, film_id)
 
     return jsonify({
@@ -156,7 +157,7 @@ def delete_professionnel_route():
     film_id = request.form["film_id"]
     professionnel_id = request.form["professionnel_id"]
     metier = request.form["metier"]
-    metier_id = modele.get_or_create_metier(metier)
+    metier_id = modele.get_metier(metier)
     modele.delete_professionnel_metier_film(professionnel_id, metier_id, film_id)
     return jsonify({"success": True})
 
