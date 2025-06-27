@@ -1,18 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const showBtn = document.getElementById('show-add-pro');
   const formDiv = document.getElementById('add-pro-form');
-  if (showBtn && formDiv) {
-    showBtn.addEventListener('click', () => {
-      formDiv.style.display = formDiv.style.display === 'none' ? 'block' : 'none';
-    });
-  }
 
   const addProForm = document.getElementById('form-add-pro');
   if (addProForm) {
     addProForm.addEventListener('submit', async function(e) {
       e.preventDefault();
       const formData = new FormData(addProForm);
-      const response = await fetch('/add_crew', {
+      const response = await fetch('/add_professionnel', {
         method: 'POST',
         body: formData
       });
@@ -35,10 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const infos = document.createElement('div');
         infos.className = 'pro-infos';
         let txt = `${data.pro.nom || ''} ${data.pro.prenom || ''}`;
-        if (data.pro.nationalite) txt += ` (${data.pro.nationalite})`;
         if (data.pro.date_naissance) txt += `, né(e) le ${data.pro.date_naissance}`;
         if (data.pro.date_deces) txt += `, décédé(e) le ${data.pro.date_deces}`;
-        txt += ` — ${data.pro.metier}`;
         infos.textContent = txt;
         li.appendChild(infos);
 

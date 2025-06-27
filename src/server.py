@@ -79,6 +79,22 @@ def film_detail():
         Professionnels=modele.get_professionnels_film(film_id)  # <-- AJOUTE CET ARGUMENT
     )
 
+@app.route("/ajouter_professionnel", methods=["POST"])
+def ajouter_professionnel():
+    return render_template(
+        "ajouter_professionnel.html",
+        Metiers=modele.metier(),
+    )
+
+@app.route("/professionnel_detail", methods=["POST"])
+def professionnel_detail():
+    prof_id = request.form["prof_id"]
+    return render_template(
+        "professionnel_detail.html",
+        Prof=modele.get_professionnel(prof_id),
+        Professionnels=modele.get_films_professionnel(prof_id)  # <-- AJOUTE CET ARGUMENT
+    )
+
 @app.route("/delete_film", methods=["POST"])
 def delete_film_route():
     film_id = request.form["film_id"]
@@ -88,6 +104,26 @@ def delete_film_route():
         return render_template("film_detail.html", Film=modele.get_film(film_id), Genres=modele.film_genres(film_id), error="Erreur lors de la suppression")
     
 @app.route("/add_professionnel", methods=["POST"])
+def add_professionnel():
+    nom = request.form["nom"]
+    prenom = request.form.get("prenom")
+    date_naissance = request.form.get("date_naissance")
+    date_deces = request.form.get("date_deces")
+    metier = request.form["metier"]
+
+    # Ajoute le professionnel (fonction existante)
+    modele.add_professionnel_no_metier(nom, prenom, date_naissance, date_deces)
+    return jsonify({
+        "success": True,
+        "pro": {
+            "nom": nom,
+            "prenom": prenom,
+            "date_naissance": date_naissance,
+            "date_deces": date_deces,
+        }
+    })
+
+@app.route("/add_crew", methods=["POST"])
 def add_professionnel_route():
     film_id = request.form["film_id"]
     nom = request.form["nom"]

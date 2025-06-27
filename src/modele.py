@@ -115,6 +115,15 @@ def genre():
     conn.close()
     return(genre)
 
+def metier():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''select * from metier''')
+    metier = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return(metier)
+
 def get_film(film_id):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -122,6 +131,16 @@ def get_film(film_id):
     cursor.close()
     conn.close()
     return(film)
+
+
+def get_professionnel(prof_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    prof = cursor.execute('''SELECT * FROM professionnel p WHERE p.id=?''', (prof_id,)).fetchall()
+    cursor.close()
+    conn.close()
+    return(prof)
+
 
 def film_genres(film_id):
     conn = sqlite3.connect('database.db')
@@ -132,6 +151,7 @@ def film_genres(film_id):
     film_genres = cursor.fetchall()
     cursor.close()
     return(film_genres)
+
 
 def add_film(nom, resume, annee_sortie, genre_ids, note=None):
     conn = sqlite3.connect('database.db')
@@ -223,21 +243,6 @@ def modify_film(film_id, nom=None, resume=None, annee_sortie=None, genre_ids=Non
     conn.close()
     return 0
 
-# def search_film(nom,genre_id,annee):
-#     conn = sqlite3.connect('database.db')
-#     cursor = conn.cursor()
-
-#     cursor.execute('SELECT DISTINC f.* FROM liste_films f ' \
-#     'JOIN film_genre fg ON f.id = fg.film_id ' \
-#     'JOIN liste_genres g ON fg.genre_id = g.id ' \
-#     'WHERE f.nom LIKE ? ' \
-#     'AND g.id LIKE ? ' \
-#     'AND f.annee_sortie LIKE ?',
-#     ('%' + nom + '%', genre_id , annee))
-    # result = cursor.fetchall()
-    # cursor.close()
-    # conn.close()
-    # return result
 
 def search_film(nom=None, genre_id=None, annee=None):
     conn = sqlite3.connect('database.db')
@@ -316,7 +321,15 @@ def add_ami(utilisateur_id, ami_id):
 
 ##__________________ Fonctions de gestion des équipes/professionnel... __________________##
 
+def add_professionnel_no_metier(nom, prenom=None, date_naissance=None, date_deces=None):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
 
+    cursor.execute('INSERT OR IGNORE INTO professionnel (nom, prenom, date_naissance, date_deces) VALUES (?, ?, ?, ?)',
+                   (nom, prenom, date_naissance, date_deces))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def add_professionnel(nom, prenom=None, nationalite=None, date_naissance=None, date_deces=None):
     conn = sqlite3.connect('database.db')
