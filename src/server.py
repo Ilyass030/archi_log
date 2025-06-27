@@ -79,7 +79,6 @@ def search_film():
         nom = None
 
     return_value = modele.search_film(nom, genres, annee)
-    print(return_value)
     return jsonify(return_value)
 
 @app.route("/film_detail", methods=["POST"])
@@ -154,7 +153,6 @@ def add_professionnel_route():
 
 @app.route("/delete_professionnel", methods=["POST"])
 def delete_professionnel_route():
-    print(request.form)
     film_id = request.form["film_id"]
     professionnel_id = request.form["professionnel_id"]
     metier_id = request.form["metier_id"]
