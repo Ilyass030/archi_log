@@ -21,7 +21,7 @@
       <ul id="pro-list">
         {% for film in Films %}
           <li class="pro-item">
-            <form method="post" action="/film_detail">
+            <form id="film_detail" method="post" action="/film_detail">
               <div class="onefilm" onclick="document.getElementById('film_detail').submit();">
                 <p>
                   <strong>{{film[1]}}</strong>
